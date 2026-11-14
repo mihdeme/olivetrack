@@ -158,3 +158,12 @@ body{background:var(--field-paper)}button,input,select,textarea{font-family:inhe
 .field-status-note svg,.field-status-locked svg{flex-shrink:0;margin-top:1px}
 .field-status-locked{background:#fff1e8;color:#915637;border:1px solid #e9cbbb}
 .field-status-sheet .field-primary:disabled{opacity:.48;cursor:not-allowed}
+
+/* Global device-safe sizing. A sticky toolbar keeps content below iOS status bars. */
+html,body,#root{max-width:100%;min-width:0}
+.app-shell{width:100%;max-width:1024px;min-width:0;overflow-x:clip}
+.topbar{position:sticky;top:0;z-index:30;padding-top:env(safe-area-inset-top,0px);height:calc(67px + env(safe-area-inset-top,0px));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.content{width:100%;max-width:760px;min-width:0;box-sizing:border-box}
+.content>*,.phase2,.field-day,.field-home{min-width:0;max-width:100%}
+.bottom-nav{z-index:35}
+@media(max-width:390px){.content{padding-inline:13px}.topbar{padding-inline:15px}}
