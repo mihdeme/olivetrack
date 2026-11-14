@@ -15,7 +15,7 @@ const tabs: { id: Screen; label: string; icon: typeof LayoutDashboard }[] = [
 const descriptions: Record<Screen, { heading: string; description: string }> = {
   accueil: { heading: 'Vue d’ensemble', description: 'Retrouve ici les indicateurs essentiels de la campagne.' },
   recolte: { heading: 'Récolte du jour', description: 'Note les présences et répartis les ouvriers en groupes chaque jour.' },
-  ouvriers: { heading: 'Registre des ouvriers', description: 'Ajoute, modifie ou archive les ouvriers sans perdre leur historique.' },
+  ouvriers: { heading: 'Ouvriers et paiements', description: 'Gère les fiches, les avances, la paie du mercredi et les soldes de chacun.' },
   caisse: { heading: 'Caisse et ventes', description: 'Versements, livraisons et dépenses seront intégrés en phase 5.' },
   bilans: { heading: 'Rapports et impressions', description: 'Les rapports A4 seront disponibles en phase 6.' },
 }
