@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react'
 import { CalendarDays, Check, ChevronLeft, ChevronRight, Plus, Pencil, RefreshCcw, Save, UsersRound, UserRoundPlus, Archive, RotateCcw, Trash2 } from 'lucide-react'
 import { HarvestAccounting, WorkerEarningsSummary } from './Phase3'
+import { WorkerPayroll } from './Phase4'
 import {
   addWorker, assignGroup, createGroup, deleteEmptyGroup, editWorker, ensureDay,
   getDay, listAttendance, listGroups, listWorkers, markAbsent, markPresent,
@@ -34,6 +35,7 @@ export function WorkerRegister() {
   const [editing, setEditing] = useState<Worker | 'new' | null>(null)
   const [form, setForm] = useState<WorkerForm>(emptyForm)
   const [showArchived, setShowArchived] = useState(false)
+  const [view, setView] = useState<'register'|'payroll'>('register')
 
   const refresh = useCallback(async () => {
     setLoading(true)
@@ -73,6 +75,8 @@ export function WorkerRegister() {
   }
   const visible = workers.filter(w => showArchived || w.is_active)
   return <section className="phase2">
+    <div className="worker-tabs" role="group" aria-label="Ouvriers et paiements"><button type="button" className={view==='register'?'selected':''} onClick={()=>setView('register')}>Registre</button><button type="button" className={view==='payroll'?'selected':''} onClick={()=>setView('payroll')}>Paies et avances</button></div>
+    {view==='register' && <>
     <div className="section-bar"><div><h2>Registre des ouvriers</h2><p>Identité conservée d'une journée à l'autre, même en cas de départ.</p></div><button className="small-action" onClick={() => beginEdit('new')}><Plus size={17}/> Ajouter</button></div>
     <div className="mini-summary"><span><strong>{workers.filter(w => w.is_active).length}</strong> actifs</span><span><strong>{workers.filter(w => !w.is_active).length}</strong> archivés</span></div>
     {error && <p className="data-error" role="alert">{error}</p>}
@@ -93,6 +97,8 @@ export function WorkerRegister() {
       </div>)}
     </div>}
     <WorkerEarningsSummary workers={workers}/>
+    </>}
+    {view==='payroll' && <WorkerPayroll workers={workers}/>}
   </section>
 }
 
