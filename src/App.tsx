@@ -8,6 +8,7 @@ import { HomeEdition } from './HomeEdition'
 import { Phase5 } from './Phase5'
 import { Reports } from './Reports'
 import './field-edition.css'
+import './mobile-overflow.css'
 
 type Screen = 'accueil' | 'recolte' | 'ouvriers' | 'caisse' | 'bilans'
 const tabs: { id: Screen; label: string; icon: typeof LayoutDashboard }[] = [
