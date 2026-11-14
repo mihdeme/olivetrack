@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react'
 import { CalendarDays, CheckCircle2, FileDown, FileText, Printer, RefreshCcw, ShieldCheck } from 'lucide-react'
 import { money } from './phase3-data'
 import { formatDate, isoToday, payrollRows, harvestRows, buyerRows, financeRows, readReportData, period, type ReportData, type ReportKind } from './report-data'
-import { formatKg } from './phase5-data'
 import './report-print.css'
 
 type Column={label:string;ratio:number;numeric?:boolean}
