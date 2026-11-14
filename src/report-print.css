@@ -27,7 +27,7 @@
 .reports-viewport{width:100%;overflow:hidden;min-width:0;border-radius:8px;padding:0;background:#e7ece5}
 .reports-zoom{transform-origin:top left;width:max-content;min-width:0}
 .report-document{width:210mm;max-width:none;margin:0}
-.report-page{position:relative;display:flex;flex-direction:column;box-sizing:border-box;width:210mm;height:297mm;padding:14mm 14mm 13mm;background:white;color:#25392c;font-family:Arial,Helvetica,sans-serif;page-break-after:always;break-after:page;overflow:hidden}
+.report-page{position:relative;display:flex;flex-direction:column;box-sizing:border-box;width:210mm;height:295mm;padding:14mm 14mm 13mm;background:white;color:#25392c;font-family:Arial,Helvetica,sans-serif;page-break-after:always;break-after:page;overflow:hidden}
 .report-page:last-child{page-break-after:auto;break-after:auto}
 .report-paper-head{display:flex;align-items:center;justify-content:space-between;gap:5mm;padding-bottom:7mm;border-bottom:.5mm solid #284d38;flex-shrink:0}
 .report-brand{display:flex;align-items:center;gap:3mm}
@@ -42,8 +42,8 @@
 .report-headline p{font:8pt/1.4 Arial,sans-serif;color:#778676;margin:0}
 .report-period{display:flex;align-items:center;gap:1.4mm;font:8pt Arial,sans-serif;color:#55705b;margin-top:4mm}
 .report-period strong{font-weight:700}
-.report-stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2mm;margin:0 0 7mm;flex-shrink:0}
-.report-stat-grid>div{background:#f0f5eb;border:0.2mm solid #e3ebdf;border-radius:2mm;padding:3.5mm 2.6mm;min-width:0}
+.report-stat-grid{display:flex;gap:2mm;margin:0 0 7mm;flex-shrink:0}
+.report-stat-grid>div{flex:1 1 0;background:#f0f5eb;border:0.2mm solid #e3ebdf;border-radius:2mm;padding:3.5mm 2.6mm;min-width:0}
 .report-stat-grid span{display:block;font:7pt/1.3 Arial,sans-serif;color:#69806d}
 .report-stat-grid strong{display:block;font:700 10pt/1.2 Arial,sans-serif;color:#1c432e;margin-top:2.6mm;overflow-wrap:anywhere}
 .report-table{table-layout:fixed;border-collapse:collapse;width:100%;font:8.2pt/1.3 Arial,sans-serif}
@@ -77,6 +77,6 @@
  .content{display:block!important}
  .reports-module,.reports-ready,.reports-viewport,.reports-zoom,.report-document{display:block!important;width:auto!important;max-width:none!important;overflow:visible!important;padding:0!important;margin:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;zoom:1!important;transform:none!important}
  .report-document{width:210mm!important}
- .report-page{width:210mm!important;height:297mm!important;min-height:297mm!important;margin:0!important;overflow:hidden!important;box-shadow:none!important;print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}
+ .report-page{width:210mm!important;height:295mm!important;min-height:295mm!important;margin:0!important;overflow:hidden!important;box-shadow:none!important;print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}
  .report-page:last-child{break-after:auto!important;page-break-after:auto!important}
 }
