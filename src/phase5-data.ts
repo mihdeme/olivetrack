@@ -48,14 +48,16 @@ export async function listBuyers():Promise<Buyer[]>{
   if(result.length>=50000)throw Error('Liste d’acheteurs trop importante.')
  }
 }
-export async function saveBuyer(input:{id?:string;name:string;phone:string|null;notes:string|null;is_active:boolean}):Promise<void>{
+export async function saveBuyer(input:{id?:string;name:string;phone:string|null;notes:string|null;is_active:boolean}):Promise<string>{
  const payload={name:input.name,phone:input.phone,notes:input.notes,is_active:input.is_active}
  if(input.id){
-  const {error}=await getDB().from('olives_buyers').update(payload).eq('id',input.id).select('id').single()
+  const {data,error}=await getDB().from('olives_buyers').update(payload).eq('id',input.id).select('id').single()
   if(error)throw Error(error.message)
+  return data.id
  }else{
-  const {error}=await getDB().from('olives_buyers').insert(payload).select('id').single()
+  const {data,error}=await getDB().from('olives_buyers').insert(payload).select('id').single()
   if(error)throw Error(error.message)
+  return data.id
  }
 }
 export async function listLedger():Promise<Entry[]>{
