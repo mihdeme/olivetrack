@@ -95,7 +95,7 @@ function harvestReport(data:ReportData,date:string):PdfReport{
    worker:worker?.full_name??'Ouvrier inconnu',
    assignment:group?.name??'Sans groupe',
    mode:individual?(individual.mode==='daily'?'Journée':'Sac individuel'):group?(harvest?'Sac collectif':'Groupe non valorisé'):'Non valorisé',
-   quantity:individual?(individual.mode==='daily'?'1 jour':individual.quantity+' sac(s)'):group?(harvest?.sacks+' sacs / gr.'||'—'):'—',
+   quantity:individual?(individual.mode==='daily'?'1 jour':individual.quantity+' sac(s)'):group?(harvest?harvest.sacks+' sacs / gr.':'—'):'—',
    amount:moneyShort((individual?.amount_cents??0)+(groupEarning.get(a.worker_id)??0))
   }
  }).sort((a,b)=>a.assignment.localeCompare(b.assignment,'fr')||a.worker.localeCompare(b.worker,'fr'))
