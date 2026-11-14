@@ -31,11 +31,11 @@ export function parsePaymentCents(raw: string): number | null {
   return Number.isSafeInteger(result) && result >= 1 && result <= 1000000000 ? result : null
 }
 
-async function allPages<T>(table: 'worker_payments' | 'worker_earnings', columns: string): Promise<T[]> {
+async function allPages<T>(table: 'worker_payments' | 'worker_earnings' | 'worker_day_compensations', columns: string): Promise<T[]> {
   const result: T[] = []
   for (let start=0; ;start += 500) {
     const query = db().from(table).select(columns)
-    const ordered = table === 'worker_payments' ? query.order('id') : query.order('harvest_id').order('worker_id')
+    const ordered = table === 'worker_earnings' ? query.order('harvest_id').order('worker_id') : query.order('id')
     const { data, error } = await ordered.range(start,start+499)
     if (error) throw Error(error.message)
     const page = (data ?? []) as T[]
