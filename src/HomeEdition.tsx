@@ -11,21 +11,30 @@ export function HomeEdition({onNavigate}:{onNavigate:(screen:'recolte'|'ouvriers
  const [error,setError]=useState('')
  useEffect(()=>{
   let live=true
+  async function allRows(table:'group_harvests'|'worker_day_compensations',columns:string){
+   if(!supabase)throw Error('Supabase non configuré')
+   const rows:{sacks?:number;mode?:string;quantity?:number}[]=[]
+   for(let start=0;;start+=500){
+    const {data,error}=await supabase.from(table).select(columns).order('id').range(start,start+499)
+    if(error)throw Error(error.message)
+    rows.push(...(data??[]))
+    if(!data || data.length<500)return rows
+    if(rows.length>=50000)throw Error('Historique trop volumineux.')
+   }
+  }
   async function load(){
    if(!supabase)throw Error('Supabase non configuré')
    const [workers,payroll,group,individual]=await Promise.all([
     listWorkers(),readPayroll(),
-    supabase.from('group_harvests').select('sacks'),
-    supabase.from('worker_day_compensations').select('mode,quantity')
+    allRows('group_harvests','id,sacks'),
+    allRows('worker_day_compensations','id,mode,quantity')
    ])
-   if(group.error)throw Error(group.error.message)
-   if(individual.error)throw Error(individual.error.message)
    const earned=payroll.earnings.reduce((sum,row)=>sum+row.amount_cents,0)
    const paid=payroll.payments.reduce((sum,row)=>sum+row.amount_cents,0)
    if(live)setStats({
     workers:workers.length,active:workers.filter(w=>w.is_active).length,
-    groupSacks:(group.data??[]).reduce((sum,row)=>sum+row.sacks,0),
-    individualSacks:(individual.data??[]).filter(row=>row.mode==='individual_sacks').reduce((sum,row)=>sum+row.quantity,0),
+    groupSacks:group.reduce((sum,row)=>sum+(row.sacks??0),0),
+    individualSacks:individual.filter(row=>row.mode==='individual_sacks').reduce((sum,row)=>sum+(row.quantity??0),0),
     earned,paid,due:earned-paid
    })
   }
