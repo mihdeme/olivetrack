@@ -3,7 +3,7 @@
 Application mobile de gestion de campagne oléicole. Code public ; données d'exploitation privées dans Supabase.
 
 ## État du projet
-**Phases 1, 2 et 3 validées sur iPhone** : connexion, ouvriers, présences, groupes, sacs et calcul exact des rémunérations. **Phase 4 interface validée sur iPhone** : avances, paies hebdomadaires, versements partiels et soldes de départ, avec historique immuable (premier versement réel encore à valider). **Phase 4.5 validée sur iPhone** : trois modes de rémunération, recherche, pointage collectif et interface Field Edition, avec changement de statut guidé en une action. **Phase 5 en validation** : bons de pesée, acheteurs, encaissements réels, dépenses et journal comptable. La génération de rapports PDF reste prévue en phase 6.
+**Phases 1, 2 et 3 validées sur iPhone** : connexion, ouvriers, présences, groupes, sacs et calcul exact des rémunérations. **Phase 4 interface validée sur iPhone** : avances, paies hebdomadaires, versements partiels et soldes de départ, avec historique immuable (premier versement réel encore à valider). **Phase 4.5 validée sur iPhone** : trois modes de rémunération, recherche, pointage collectif et interface Field Edition, avec changement de statut guidé en une action. **Phase 5 en validation** : bons de pesée, acheteurs, encaissements réels, dépenses et journal comptable. **Phase 6 en validation** : rapports A4 de paie, récolte, acheteurs et finances, sauvegarde en PDF via impression iPhone ; correction des débordements d'interface.
 
 ## Structure
 - `src/App.tsx` : connexion et navigation mobile.
@@ -21,7 +21,10 @@ Application mobile de gestion de campagne oléicole. Code public ; données d'ex
 - `docs/phase-4-5-field-edition.md` : modèle métier, validation et UX.
 - `src/Phase5.tsx`, `src/phase5-data.ts`, `src/phase5.css` : acheteurs, bons de pesée, recettes réelles, dépenses et journal comptable mobile.
 - `docs/phase-5-ventes-et-caisse.md` : règles, sécurité, limites et tests iPhone.
-- `tests/` : contrôles de phases 1–5.
+- `src/Reports.tsx`, `src/report-data.ts`, `src/report-print.css` : quatre rapports A4 avec pagination maîtrisée, période et signature.
+- `src/mobile-overflow.css` : contrôle du responsive iPhone, des cadres et du haut d'écran.
+- `docs/phase6-rapports-a4-et-mobile.md` : contraintes d'impression, contrôle visuel et tests iPhone.
+- `tests/` : contrôles de phases 1–6.
 - `docs/architecture-securite.md` : décisions de la phase 0.
 
 ## Démarrage local
@@ -52,6 +55,13 @@ L'interface accepte uniquement les comptes Supabase Auth existants. Elle n'expos
 3. **Caisse → Dépenses** : enregistrer les frais d'exploitation (transport, carburant, matériel, entretien, repas, autres), **sans ressaisir les salaires**.
 4. **Caisse → Journal** : consulter toutes les opérations et corriger par contrepassation, jamais en effaçant l'origine.
 5. Le **flux financier net** indiqué dans Caisse est un flux global enregistré, **pas le solde physique des espèces**, ni un solde bancaire ; aucun fonds d'ouverture n'est encore géré.
+
+## Utilisation — phase 6
+1. **Bilans** : choisir Paie des ouvriers, Récolte quotidienne, Ventes & acheteurs ou Bilan financier.
+2. Filtrer la période puis générer l'**aperçu A4** à partir des données en lecture seule.
+3. Toucher **Imprimer / Enregistrer PDF**. Sur iPhone, ouvrir l'aperçu d'impression et utiliser **Partager → Enregistrer dans Fichiers** pour récupérer le PDF.
+4. Vérifier les colonnes de signature vierges, les numéros de pages et les montants. Une écriture de paie ne remplace pas une signature réelle.
+5. Les rapports ne modifient jamais la base et distinguent les ventes des encaissements effectifs.
 
 ## Hébergement
 Le code est public sur GitHub et OliveTrack est disponible sur https://mihdeme.github.io/olivetrack/ . Les données restent privées via Supabase Auth et RLS. La compatibilité des conditions d'utilisation de GitHub Pages avec l'exploitation de l'outil doit être revue avant une utilisation commerciale régulière.
