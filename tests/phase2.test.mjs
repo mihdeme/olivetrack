@@ -33,7 +33,7 @@ test('Worker history survives archived status, no delete-worker API', () => {
   assert.doesNotMatch(data,/\.from\('workers'\)\.delete\(/)
 })
 test('UI shows real Supabase data and explicitly wires phase 2 screens', () => {
-  assert.match(app,/<DailyAttendance\/>/)
+  assert.match(app,/<FieldDay\/>/)
   assert.match(app,/<WorkerRegister\/>/)
   assert.match(data,/from\('workers'\)/)
   assert.match(data,/from\('attendances'\)/)
