@@ -32,11 +32,27 @@ function SignIn({ onLogin }: { onLogin: (u: User) => void }) {
     event.preventDefault()
     if (!supabase) return
     setPending(true); setError('')
-    const { data, error: authError } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
-    setPending(false)
-    if (authError || !data.user) { setError('Connexion impossible. Vérifie tes identifiants.'); return }
-    if (!ownerUserId || data.user.id !== ownerUserId) { await supabase.auth.signOut(); setError('Ce compte n’est pas autorisé à accéder à OliveTrack.'); return }
-    onLogin(data.user)
+    try {
+      const { data, error: authError } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
+      if (authError) {
+        const errorCode = authError.code ?? 'unknown'
+        const httpStatus = authError.status ?? 'unknown'
+        // Show the provider's machine-readable diagnostic without exposing passwords or session tokens.
+        setError(`Connexion refusée (code : ${errorCode}, HTTP : ${httpStatus}). ${errorCode === 'invalid_credentials' ? 'Vérifie le mot de passe enregistré pour ce compte Supabase.' : 'Signale-moi ce code pour identifier la cause.'}`)
+        return
+      }
+      if (!data.user) { setError('Connexion sans utilisateur retourné. Réessaie.'); return }
+      if (!ownerUserId || data.user.id !== ownerUserId) {
+        await supabase.auth.signOut()
+        setError('Ce compte n’est pas autorisé à accéder à OliveTrack.')
+        return
+      }
+      onLogin(data.user)
+    } catch {
+      setError('Impossible de joindre Supabase. Vérifie ta connexion et réessaie.')
+    } finally {
+      setPending(false)
+    }
   }
   return <main className="auth-screen">
     <div className="auth-top"><Brand /><span className="tag"><ShieldCheck size={14} /> Accès privé</span></div>
