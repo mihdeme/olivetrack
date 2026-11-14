@@ -158,13 +158,17 @@ class Painter{
   const sum=columns.reduce((s,x)=>s+x.width,0)
   const sizes=columns.map(c=>width*c.width/sum)
   const header=()=>{
-   this.rectangle(this.margin,this.y,width,26,paper.olive)
+   const labels=columns.map((c,i)=>cutLines(splitText(c.title,sizes[i]-16,7.2,true),3,sizes[i]-16,7.2))
+   const h=Math.max(27,...labels.map(lines=>lines.length*9+12))
+   this.rectangle(this.margin,this.y,width,h,paper.olive)
    let x=this.margin
    columns.forEach((c,i)=>{
-    this.text(c.title,x+(c.align==='right'?sizes[i]-8:c.align==='center'?sizes[i]/2:9),this.y+8,7.5,true,paper.white,c.align??'left')
+    const align=c.align??'left'
+    const tx=align==='right'?x+sizes[i]-8:align==='center'?x+sizes[i]/2:x+9
+    labels[i].forEach((line,n)=>this.text(line,tx,this.y+8+n*9,7.2,true,paper.white,align))
     x+=sizes[i]
    })
-   this.y+=26
+   this.y+=h
   }
   header()
   if(rows.length===0){
