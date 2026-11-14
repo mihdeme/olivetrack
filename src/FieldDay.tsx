@@ -66,7 +66,13 @@ export function FieldDay(){
  })
  async function changePresence(workerId:string){
   const isPresent=presentIds.has(workerId)
-  if(isPresent&&!window.confirm('Retirer la présence de cet ouvrier ? Les rémunérations déjà enregistrées devront d’abord être supprimées.'))return
+  if(isPresent && (individual.some(p=>p.worker_id===workerId) ||
+      attendance.some(a=>a.worker_id===workerId && a.group_id && harvests.some(h=>h.group_id===a.group_id)))){
+    const worker=workers.find(w=>w.id===workerId)
+    if(worker)setEditing(worker)
+    return
+  }
+  if(isPresent&&!window.confirm('Marquer cet ouvrier absent pour cette journée ?'))return
   await perform(async()=>{
    const target=day??await ensureDay(date)
    await bulkAttendance({dayId:target.id,workerIds:[workerId],action:isPresent?'absent':'present'})
