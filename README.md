@@ -3,7 +3,7 @@
 Application mobile de gestion de campagne oléicole. Code public ; données d'exploitation privées dans Supabase.
 
 ## État du projet
-**Phases 1, 2 et 3 validées sur iPhone** : connexion, ouvriers, présences, groupes, sacs et calcul exact des rémunérations. **Phase 4 interface validée sur iPhone** : avances, paies hebdomadaires, versements partiels et soldes de départ, avec historique immuable (premier versement réel encore à valider). **Phase 4.5 validée sur iPhone** : trois modes de rémunération, recherche, pointage collectif et interface Field Edition, avec changement de statut guidé en une action. **Phase 5 en validation** : bons de pesée, acheteurs, encaissements réels, dépenses et journal comptable. La génération de rapports PDF reste prévue en phase 6.
+**Phases 1, 2 et 3 validées sur iPhone** : connexion, ouvriers, présences, groupes, sacs et calcul exact des rémunérations. **Phase 4 interface validée sur iPhone** : avances, paies hebdomadaires, versements partiels et soldes de départ, avec historique immuable (premier versement réel encore à valider). **Phase 4.5 validée sur iPhone** : trois modes de rémunération, recherche, pointage collectif et interface Field Edition, avec changement de statut guidé en une action. **Phase 5 validée sur iPhone** : bons de pesée, acheteurs, encaissements réels, dépenses et journal comptable. **Phase 6 en validation** : quatre exports PDF A4 (paie avec signatures, récolte journalière, ventes/encaissements, bilan financier) et corrections de débordement iPhone.
 
 ## Structure
 - `src/App.tsx` : connexion et navigation mobile.
@@ -21,7 +21,9 @@ Application mobile de gestion de campagne oléicole. Code public ; données d'ex
 - `docs/phase-4-5-field-edition.md` : modèle métier, validation et UX.
 - `src/Phase5.tsx`, `src/phase5-data.ts`, `src/phase5.css` : acheteurs, bons de pesée, recettes réelles, dépenses et journal comptable mobile.
 - `docs/phase-5-ventes-et-caisse.md` : règles, sécurité, limites et tests iPhone.
-- `tests/` : contrôles de phases 1–5.
+- `src/Phase6.tsx`, `src/report-data.ts`, `src/report-definitions.ts`, `src/report-pdf.ts`, `src/phase6.css` : bilans PDF A4, pagination et partage iPhone.
+- `docs/phase-6-rapports-pdf-ui.md` : conception du rendu, limites et critères d’acceptation.
+- `tests/` : contrôles de phases 1–6.
 - `docs/architecture-securite.md` : décisions de la phase 0.
 
 ## Démarrage local
@@ -52,6 +54,14 @@ L'interface accepte uniquement les comptes Supabase Auth existants. Elle n'expos
 3. **Caisse → Dépenses** : enregistrer les frais d'exploitation (transport, carburant, matériel, entretien, repas, autres), **sans ressaisir les salaires**.
 4. **Caisse → Journal** : consulter toutes les opérations et corriger par contrepassation, jamais en effaçant l'origine.
 5. Le **flux financier net** indiqué dans Caisse est un flux global enregistré, **pas le solde physique des espèces**, ni un solde bancaire ; aucun fonds d'ouverture n'est encore géré.
+
+## Utilisation — phase 6
+1. Dans **Bilans**, choisir la feuille de paie, le rapport de récolte, l'état des acheteurs ou le bilan financier.
+2. Choisir la journée, le mois, l'ensemble de la campagne ou une période spécifique.
+3. Appuyer sur **Générer le PDF A4** : OliveTrack prépare un vrai PDF vectoriel sur le téléphone, avec pagination et tableaux (A4 paysage pour l’émargement).
+4. Sur iPhone, utiliser **Enregistrer dans Fichiers**, **Partager** ou **Imprimer** depuis la feuille de partage ; si indisponible, le fichier est téléchargé dans le navigateur.
+5. La génération est en lecture seule. Les rapports différencient bien les gains de la période et les soldes cumulés à la date de fin, ainsi que les ventes et encaissements.
+6. La police PDF standard gère les accents latins, mais pas encore le texte intégral en caractères arabes. Vérifier ce besoin avant un lancement de production.
 
 ## Hébergement
 Le code est public sur GitHub et OliveTrack est disponible sur https://mihdeme.github.io/olivetrack/ . Les données restent privées via Supabase Auth et RLS. La compatibilité des conditions d'utilisation de GitHub Pages avec l'exploitation de l'outil doit être revue avant une utilisation commerciale régulière.
