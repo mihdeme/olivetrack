@@ -82,7 +82,7 @@ function createContent(data:ReportData,kind:ReportKind,start:string,end:string):
  }
 }
 function paginate(rows:ReportRow[]):ReportRow[][]{
- const size=17
+ const size=14
  if(rows.length===0)return [[]]
  const result:ReportRow[][]=[]
  for(let i=0;i<rows.length;i+=size)result.push(rows.slice(i,i+size))
@@ -98,7 +98,7 @@ function Pages({content,start,end,generated}:{content:Content;start:string;end:s
     <div className="report-meta">DOCUMENT DE GESTION<br/><strong>ÉDITION DU {generated}</strong></div>
    </header>
    <div className="report-headline">
-    <div className="report-overline">{index===0?'RAPPORT OFFICIEL DE CAMPAGNE':'SUITE DU RAPPORT · PAGE '+(index+1)}</div>
+    <div className="report-overline">{index===0?'ÉTAT DE GESTION · CAMPAGNE OLÉICOLE':'SUITE DU RAPPORT · PAGE '+(index+1)}</div>
     <h2>{content.title}</h2>
     <p>{content.subtitle}</p>
     <div className="report-period"><CalendarDays size={14}/> Période du <strong>{formatDate(start)}</strong> au <strong>{formatDate(end)}</strong></div>
