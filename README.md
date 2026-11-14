@@ -3,7 +3,7 @@
 Application mobile de gestion de campagne oléicole. Code public ; données d'exploitation privées dans Supabase.
 
 ## État du projet
-**Phases 1, 2 et 3 validées sur iPhone** : connexion, ouvriers, présences, groupes, sacs et calcul exact des rémunérations. **Phase 4 en validation** : avances, paies hebdomadaires, versements partiels et soldes de départ, avec historique comptable immuable. Pesées, ventes, dépenses et caisse générale restent en phase 5.
+**Phases 1, 2 et 3 validées sur iPhone** : connexion, ouvriers, présences, groupes, sacs et calcul exact des rémunérations. **Phase 4 interface validée sur iPhone** : avances, paies hebdomadaires, versements partiels et soldes de départ, avec historique immuable (premier versement réel encore à valider). **Phase 4.5 en validation** : trois modes de rémunération, recherche, pointage collectif et interface Field Edition. Pesées, ventes, dépenses et caisse générale restent en phase 5.
 
 ## Structure
 - `src/App.tsx` : connexion et navigation mobile.
@@ -16,7 +16,10 @@ Application mobile de gestion de campagne oléicole. Code public ; données d'ex
 - `docs/phase-3-regles-et-tests.md` : calculs et règles de verrouillage historiques.
 - `src/Phase4.tsx` et `src/phase4-data.ts` : avances, paiements et soldes par ouvrier.
 - `docs/phase-4-paiements-et-tests.md` : règles de journalisation et validations.
-- `tests/` : contrôles de phases 1–4.
+- `src/FieldDay.tsx`, `src/HomeEdition.tsx`, `src/field-edition.css` : nouvelle expérience Field Edition, gestion rapide des effectifs et tableau de bord réel.
+- `src/phase45-data.ts` : rémunération individuelle, à la journée, et actions groupées.
+- `docs/phase-4-5-field-edition.md` : modèle métier, validation et UX.
+- `tests/` : contrôles de phases 1–4.5.
 - `docs/architecture-securite.md` : décisions de la phase 0.
 
 ## Démarrage local
@@ -31,12 +34,12 @@ Application mobile de gestion de campagne oléicole. Code public ; données d'ex
 L'interface accepte uniquement les comptes Supabase Auth existants. Elle n'expose pas de formulaire d'inscription. **Ce n'est pas suffisant pour interdire les inscriptions par l'API** : le réglage d'inscription doit aussi être désactivé dans Supabase Auth, et les autorisations métier devront être garanties par RLS et une liste stricte des utilisateurs autorisés avant toute mise en production.
 
 ## Utilisation — phase 2
-1. Onglet **Ouvriers** : ajouter le nom de chaque personne ; téléphone et remarques facultatifs.
+1. Onglet **Ouvriers** : ajouter le nom de chaque personne ; téléphone et remarques facultatifs. La recherche et les panneaux contextuels simplifient la gestion de dizaines de personnes.
 2. Archiver une personne qui part : son identité et ses anciennes présences restent conservées. La réactiver si elle revient.
-3. Onglet **Récolte** : choisir une date, créer les groupes du jour, cocher les personnes présentes, puis choisir le groupe de chacune.
+3. Onglet **Récolte** : choisir une date ; les sections Pointage / Groupes / Gains permettent de pointer en masse, d'affecter plusieurs personnes et de saisir les trois modes de rémunération.
 4. Une personne ne peut avoir qu'une seule présence par date et ne peut donc appartenir qu'à un seul groupe ce jour-là.
-5. **Phase 3** : après avoir affecté les ouvriers, renseigner le nombre de sacs et le tarif (100 DH par défaut). Les gains sont répartis exactement entre les membres.
-6. Une fois les sacs enregistrés, le groupe est verrouillé. Pour changer les membres, remettre d'abord les sacs à zéro, modifier la composition et saisir à nouveau la récolte.
+5. **Modes de rémunération :** collectif au sac, individuel au sac (ouvrier sans groupe) ou à la journée (ouvrier sans groupe). Aucun forfait : les autres charges seront enregistrées en dépenses à la phase 5.
+6. Une fois des gains enregistrés, les affectations correspondantes sont verrouillées. Pour changer les membres ou le mode de rémunération, remettre d'abord les gains de la journée à zéro, modifier l'affectation, puis ressaisir les montants.
 7. Dans **Ouvriers → Paies et avances**, sélectionner un ouvrier, saisir le montant effectivement remis, la date et le type (avance / paie du mercredi / partiel / solde de départ), puis confirmer.
 8. La rémunération gagnée n'est **pas** le paiement effectué. Le solde = gagné − sommes effectivement versées. Une avance peut créer un solde négatif temporaire.
 9. Une erreur de paiement se corrige par **contrepassation** : l'original reste dans l'historique. Ne jamais enregistrer une sortie d'argent fictive sur le compte d'un véritable ouvrier.
