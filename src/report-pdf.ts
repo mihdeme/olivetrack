@@ -177,7 +177,7 @@ class Painter{
   }
   rows.forEach((row,index)=>{
    const cells=columns.map((c,i)=>cutLines(splitText(String(row[c.key]??''),sizes[i]-16,8,c.key==='total',12),4,sizes[i]-16,8))
-   const height=Math.max(25,...cells.map(lines=>lines.length*11+13))
+   const height=Math.max(this.landscape?30:25,...cells.map(lines=>lines.length*11+13))
    if(this.pageBreak(height+7)){
     this.text(title+' (suite)',this.margin,83,10,true)
     this.y=108
@@ -189,6 +189,9 @@ class Painter{
     const align=c.align??'left'
     const tx=align==='right'?x+sizes[i]-9:align==='center'?x+sizes[i]/2:x+9
     cells[i].forEach((line,n)=>this.text(line,tx,this.y+7+n*11,8,c.key==='total',paper.olive,align))
+    if(c.key==='signature' && !String(row[c.key]??'').trim()){
+     this.line(x+9,this.y+height-8,x+sizes[i]-9,this.y+height-8,paper.line,.55)
+    }
     x+=sizes[i]
    })
    this.line(this.margin,this.y+height,this.w-this.margin,this.y+height,paper.line,.36)
