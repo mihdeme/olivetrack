@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react'
 import { CalendarDays, Check, ChevronLeft, ChevronRight, Plus, Pencil, RefreshCcw, Save, UsersRound, UserRoundPlus, Archive, RotateCcw, Trash2 } from 'lucide-react'
+import { HarvestAccounting, WorkerEarningsSummary } from './Phase3'
 import {
   addWorker, assignGroup, createGroup, deleteEmptyGroup, editWorker, ensureDay,
   getDay, listAttendance, listGroups, listWorkers, markAbsent, markPresent,
@@ -91,6 +92,7 @@ export function WorkerRegister() {
         <button disabled={busy} className="icon-action" aria-label={worker.is_active ? 'Archiver' : 'Réactiver'} title={worker.is_active ? 'Archiver' : 'Réactiver'} onClick={() => void setActive(worker, !worker.is_active)}>{worker.is_active ? <Archive size={17}/> : <RotateCcw size={17}/>}</button>
       </div>)}
     </div>}
+    <WorkerEarningsSummary workers={workers}/>
   </section>
 }
 
@@ -178,6 +180,7 @@ export function DailyAttendance() {
         </div>
       })}
     </div>}
+    <HarvestAccounting day={day} groups={groups} attendance={attendance} workers={workers} onChanged={refresh}/>
     <div className="info-hint"><UsersRound size={17}/> Les effectifs peuvent changer chaque jour. Une présence passée est conservée même si l'ouvrier est archivé plus tard.</div>
   </section>
 }
