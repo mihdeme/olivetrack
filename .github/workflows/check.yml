@@ -1,7 +1,7 @@
 name: Check
 on:
   push:
-    branches: [main, phase-1-fondations]
+    branches: [main, 'phase-*']
   pull_request:
     branches: [main]
 jobs:
