@@ -1,6 +1,16 @@
 name: Deploy OliveTrack to GitHub Pages
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'index.html'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vite.config.ts'
+      - '.github/workflows/deploy.yml'
 permissions:
   contents: read
   pages: write
