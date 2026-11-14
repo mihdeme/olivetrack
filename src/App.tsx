@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import type { User } from '@supabase/supabase-js'
 import { LayoutDashboard, Sprout, Users, Wallet, Printer, LogOut, ShieldCheck, LockKeyhole, ArrowRight, LoaderCircle, Leaf, AlertCircle } from 'lucide-react'
-import { configured, supabase } from './supabase'
+import { configured, supabase, ownerUserId } from './supabase'
 
 type Screen = 'accueil' | 'recolte' | 'ouvriers' | 'caisse' | 'bilans'
 const tabs: { id: Screen; label: string; icon: typeof LayoutDashboard }[] = [
@@ -35,6 +35,7 @@ function SignIn({ onLogin }: { onLogin: (u: User) => void }) {
     const { data, error: authError } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
     setPending(false)
     if (authError || !data.user) { setError('Connexion impossible. Vérifie tes identifiants.'); return }
+    if (!ownerUserId || data.user.id !== ownerUserId) { await supabase.auth.signOut(); setError('Ce compte n’est pas autorisé à accéder à OliveTrack.'); return }
     onLogin(data.user)
   }
   return <main className="auth-screen">
@@ -89,20 +90,20 @@ export function App() {
     supabase.auth.getUser().then(({ data, error }) => {
       if (!alive) return
       if (error && !/session missing/i.test(error.message)) setSessionError('Vérification de session indisponible. Réessaie plus tard.')
-      setUser(data.user ?? null)
+      setUser(data.user?.id === ownerUserId ? data.user : null)
       setLoading(false)
     }).catch(() => { if (alive) {setSessionError('Impossible de contacter le service de connexion.');setLoading(false)} })
     const { data: subscription } = supabase.auth.onAuthStateChange((event) => {
       if (event === 'SIGNED_OUT') setUser(null)
       // Do not treat a locally cached auth event as proof of authorization.
       if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-        void supabase?.auth.getUser().then(({ data }) => { if (alive) setUser(data.user ?? null) })
+        void supabase?.auth.getUser().then(({ data }) => { if (alive) setUser(data.user?.id === ownerUserId ? data.user : null) })
       }
     })
     return () => {alive=false; subscription.subscription.unsubscribe()}
   }, [])
   async function logout() { await supabase?.auth.signOut(); setUser(null) }
-  if (!configured) return <main className="setup-screen"><Brand/><div className="setup-card"><h1>Configuration requise</h1><p>Les paramètres publics de connexion Supabase doivent être fournis au moment du déploiement.</p><code>VITE_SUPABASE_URL</code><code>VITE_SUPABASE_PUBLISHABLE_KEY</code></div></main>
+  if (!configured || !ownerUserId) return <main className="setup-screen"><Brand/><div className="setup-card"><h1>Configuration requise</h1><p>Les paramètres publics de connexion Supabase doivent être fournis au moment du déploiement.</p><code>VITE_SUPABASE_URL</code><code>VITE_SUPABASE_PUBLISHABLE_KEY</code><code>VITE_OWNER_USER_ID</code></div></main>
   if (loading) return <main className="loading-screen"><Leaf size={36}/><p>Vérification de la session…</p></main>
   if (sessionError) return <main className="setup-screen"><Brand/><div className="setup-card"><h1>Connexion indisponible</h1><p>{sessionError}</p><button className="primary-button" onClick={() => window.location.reload()}>Réessayer</button></div></main>
   return user ? <Workspace user={user} onLogout={logout}/> : <SignIn onLogin={setUser}/>
