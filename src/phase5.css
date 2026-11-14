@@ -1,0 +1,72 @@
+/* OliveTrack Phase 5 — Field Edition financial ledger */
+.p5{max-width:720px}
+.p5-hero{background:#17372a;color:#f9f7ec;border-radius:17px;padding:20px;position:relative;overflow:hidden}
+.p5-hero:after{content:"";position:absolute;pointer-events:none;border:1px solid #ffffff12;border-radius:50%;width:230px;height:230px;right:-95px;top:-90px;box-shadow:0 0 0 25px #ffffff04,0 0 0 65px #ffffff03}
+.p5-hero-overline{display:flex;align-items:center;gap:8px;color:#bfd3b5;font-size:10px;letter-spacing:1.4px;font-weight:800}
+.p5-hero-title{font-family:Georgia,serif;font-size:28px;letter-spacing:-.6px;margin-top:10px}
+.p5-hero>p{font-size:12px;line-height:1.5;color:#bed0bb;max-width:320px;margin:8px 0 19px}
+.p5-hero-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:13px 0;border-top:1px solid #ffffff20}
+.p5-hero-row>div+div{border-left:1px solid #ffffff26;padding-left:14px}
+.p5-hero-row span,.p5-hero-foot span{font-size:10px;color:#a9c3a4;display:block}
+.p5-hero-row strong{display:block;font-size:20px;letter-spacing:-.7px;margin-top:7px}
+.p5-hero-foot{border-top:1px solid #ffffff24;padding-top:14px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.p5-hero-foot strong{font-size:19px}
+.p5-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:12px 0}
+.p5-metrics>div{position:relative;background:#fff;border:1px solid #e0e5da;border-radius:13px;padding:14px;min-height:99px}
+.p5-metrics svg{position:absolute;right:11px;top:11px;color:#779677}
+.p5-metrics span{font-size:10px;color:#7e917d;display:block;padding-right:14px}
+.p5-metrics strong{display:block;margin-top:17px;font-size:17px;letter-spacing:-.3px;color:#203d2a;overflow-wrap:anywhere}
+.p5-disclaimer{display:flex;align-items:flex-start;gap:8px;font-size:11px;line-height:1.55;color:#72816f;margin:14px 0}
+.p5-disclaimer svg{flex-shrink:0;margin-top:1px}
+.p5-tabs{display:flex;gap:5px;overflow-x:auto;padding:5px 0 9px;margin:15px 0 12px;scrollbar-width:none}
+.p5-tabs button{background:#fff;border:1px solid #dfe7db;border-radius:11px;color:#718570;font-size:11px;padding:11px 13px;white-space:nowrap;font-weight:700}
+.p5-tabs button.selected{background:#183c2c;color:#fff;border-color:#183c2c}
+.p5-section-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:5px 0 14px}
+.p5-section-heading h3{font-family:Georgia,serif;letter-spacing:-.5px;color:#18372b;font-weight:500;font-size:22px;margin:5px 0 0}
+.p5-subaction{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:750;padding:9px 11px;background:#eaf0e5;border:1px solid #d5e0d0;border-radius:11px;color:#305e3a}
+.p5-buyers,.p5-form,.p5-balances,.p5-journal{background:#fff;border:1px solid #e0e7de;border-radius:15px;padding:17px 15px;margin:12px 0}
+.p5-form{display:flex;flex-direction:column;gap:13px}
+.p5-field{display:flex;flex-direction:column;gap:6px;min-width:0;color:#4e6750;font-weight:700;font-size:12px}
+.p5-field input,.p5-field select,.p5-field textarea{background:#fafcf9;border:1px solid #d7e2d5;border-radius:10px;padding:12px;min-height:45px;color:#26422c;font-size:15px;outline-color:#4e7b55;min-width:0;width:100%}
+.p5-field textarea{resize:vertical}
+.p5-field input:focus,.p5-field textarea:focus,.p5-field select:focus{background:#fff}
+.p5-two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.p5-calculation{background:#ecf3e7;border:1px solid #deebd5;border-radius:12px;padding:13px 14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:5px}
+.p5-calculation span{font-size:12px;color:#56745d}.p5-calculation strong{font-size:21px;color:#194128}
+.p5-calculation small{width:100%;font-size:10px;color:#799079;line-height:1.5}
+.p5-buyer-card{background:#f3f6f0;border-radius:11px;padding:12px;margin-top:12px}
+.p5-buyer-card>div{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.p5-buyer-card strong{font-size:13px}
+.p5-buyer-card>div button{border:0;background:transparent;color:#64816b;padding:6px;display:grid;place-items:center}
+.p5-buyer-card section{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+.p5-buyer-card section span{font-size:11px;color:#6a846e}
+.p5-buyer-card section strong{display:block;width:100%;font-size:13px;color:#244d30}
+.p5-help{font-size:12px;line-height:1.55;color:#8a9985}
+.p5-balance-row{display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left;width:100%;padding:12px 0;min-height:55px;background:none;border:0;border-top:1px solid #ecf0e9;color:#324b36}
+.p5-balance-row span{flex:1;min-width:0;font-size:12px;font-weight:750}
+.p5-balance-row small{display:block;font-size:10px;color:#899a86;font-weight:400;margin-top:4px}
+.p5-balance-row strong{font-size:13px;white-space:nowrap}
+.p5-balance-row>svg{color:#97a795}.p5-credit{color:#ad724e}
+.p5-filter{display:flex;gap:7px;overflow:auto;margin:13px 0}
+.p5-filter button{border:1px solid #dde7d9;border-radius:99px;background:#f7faf4;color:#6a816a;padding:7px 10px;font-size:11px;white-space:nowrap}
+.p5-filter button.active{background:#1a412c;color:#fff}
+.p5-entry{display:flex;align-items:flex-start;gap:9px;padding:13px 0;border-bottom:1px solid #eef0eb}
+.p5-entry:last-child{border-bottom:0}
+.p5-entry-mark{width:32px;height:32px;border-radius:10px;background:#ecf4e9;color:#4f7854;flex-shrink:0;display:grid;place-items:center}
+.p5-entry-mark.expense,.p5-entry-mark.expense_reversal{background:#faf0e6;color:#ab7440}
+.p5-entry-mark.sale,.p5-entry-mark.sale_reversal{background:#edf2f4;color:#526e7e}
+.p5-entry-body{min-width:0;flex:1}
+.p5-entry-body strong{font-size:12px;display:block}
+.p5-entry-body small{display:block;color:#8a9888;font-size:10px;margin-top:4px;line-height:1.5;overflow-wrap:anywhere}
+.p5-entry-body .p5-reversed{color:#b16b55;font-weight:800}
+.p5-entry-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.p5-entry-right strong{font-size:12px;white-space:nowrap}
+.p5-entry-right button{display:flex;gap:5px;align-items:center;border:0;background:none;color:#a06b52;font-size:10px;padding:4px 0}
+.p5-journal-link{display:flex;align-items:flex-start;gap:8px;margin:16px 2px;color:#7b8a7a;font-size:11px;line-height:1.5}
+.p5-journal-link svg{flex-shrink:0}
+.p5-journal-link span{flex:1}
+.p5-journal-link button{background:none;border:0;white-space:nowrap;color:#385f3e;font-size:11px;font-weight:750;display:flex;align-items:center;gap:4px}
+.p5-footer{display:flex;align-items:center;gap:8px;font-size:11px;color:#9ba69b;margin:22px 0}
+.p5-checkbox{display:flex!important;flex-direction:row!important;align-items:center;gap:9px}
+.p5-checkbox input{width:18px;height:18px;accent-color:#376546}
+@media(max-width:380px){.p5-buyers,.p5-form,.p5-balances,.p5-journal{padding:13px}.p5-hero{padding:16px}.p5-hero-row strong{font-size:17px}.p5-two{gap:7px}.p5-metrics strong{font-size:14px}}
