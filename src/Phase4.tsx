@@ -102,6 +102,17 @@ export function WorkerPayroll({ workers }: { workers:Worker[] }) {
     {error && <p className="data-error" role="alert">{error}</p>}
     {success && <p className="payroll-success" role="status"><CheckCircle2 size={17}/>{success}</p>}
     {loading ? <p className="quiet">Chargement du journal…</p> : workers.length===0 ? <div className="muted-panel">Ajoute d'abord des ouvriers dans le registre.</div> : <>
+      <section className="payroll-worker-choices">
+        <h3>Soldes par ouvrier</h3>
+        <p>Sélectionne une personne pour enregistrer son versement. Les ouvriers archivés restent dans l'historique.</p>
+        <div className="payroll-worker-grid">{workers.map(w => {
+          const ws = summarizeWorker(w.id,earnings,payments)
+          return <button type="button" key={w.id} className={selected===w.id?'chosen':''} onClick={()=>{setSelected(w.id);clearRequest()}}>
+            <span>{w.full_name}{!w.is_active?' (archivé)':''}</span>
+            <strong className={ws.due<0?'payroll-negative':''}>{money(ws.due)}</strong>
+          </button>
+        })}</div>
+      </section>
       <section className="editor payroll-editor">
         <h3>Enregistrer un versement</h3>
         <label htmlFor="pay-worker">Ouvrier</label>
@@ -128,8 +139,8 @@ export function WorkerPayroll({ workers }: { workers:Worker[] }) {
       </section>
 
       <section className="payroll-weekly">
-        <h3><CalendarDays size={18}/> Paie du mercredi — {date}</h3>
-        <p>Montants enregistrés comme « Paie du mercredi » à cette date. Pour imprimer une feuille de signatures A4, voir la phase 6.</p>
+        <h3><CalendarDays size={18}/> Paie hebdomadaire — {date}</h3>
+        <p>Montants enregistrés comme « Paie du mercredi » à cette date (les paiements exceptionnels peuvent avoir une autre date). Pour la feuille de signatures A4, voir la phase 6.</p>
         <div className="payroll-weekly-total"><span>{dailyWeekly.length} versement(s) valide(s)</span><strong>{money(paidWeekly)}</strong></div>
       </section>
       <section className="payroll-history">
