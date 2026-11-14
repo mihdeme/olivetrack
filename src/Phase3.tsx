@@ -86,7 +86,7 @@ export function HarvestAccounting({ day, groups, attendance, workers, onChanged 
   return <section className="harvest-module">
     <div className="section-bar"><div><h2><Sprout size={19}/> Sacs & rémunération</h2><p>Tarif initial 100 DH par sac. Chaque groupe peut avoir son propre tarif pour cette journée.</p></div></div>
     <div className="mini-summary"><span><strong>{totalSacks}</strong> sacs</span><span><strong>{money(totalCents)}</strong> gagnés aujourd'hui</span></div>
-    <p className="quiet">Ces montants sont des rémunérations gagnées, pas des paiements effectués. Les avances et paiements seront gérés en phase 4.</p>
+    <p className="quiet">Ces montants sont des rémunérations gagnées, pas des paiements effectués. Les avances et versements se trouvent dans Ouvriers → Paies et avances.</p>
     {error && <p role="alert" className="data-error">{error}</p>}
     {loading ? <p className="quiet">Chargement des récoltes…</p> : groups.length===0 ? <div className="muted-panel">Crée d'abord un groupe et affecte-lui des ouvriers.</div> :
       <div className="harvest-cards">{groups.map(group => {
@@ -109,12 +109,12 @@ export function WorkerEarningsSummary({ workers }: { workers: Worker[] }) {
   const total = earnings.reduce((sum,e)=>sum+e.amount_cents,0)
   return <section className="earnings-summary">
     <h2><Coins size={19}/> Gains cumulés des ouvriers</h2>
-    <p>Montants gagnés depuis le début des enregistrements — sans déduction de paiements (phase 4).</p>
+    <p>Montants gagnés depuis le début des enregistrements. Pour connaître les soldes nets après paiements, ouvre Paies et avances.</p>
     {loading ? <p className="quiet">Chargement des rémunérations…</p> : error ? <p className="data-error">{error}</p> : <>
       <div className="harvest-total"><span>Total des rémunérations acquises</span><strong>{money(total)}</strong></div>
       <div className="harvest-worker-list">{workers.filter(w=>earnings.some(e=>e.worker_id===w.id)).map(w=><div className="harvest-worker-row" key={w.id}><span>{w.full_name}{!w.is_active?' (archivé)':''}</span><strong>{money(earnings.filter(e=>e.worker_id===w.id).reduce((sum,e)=>sum+e.amount_cents,0))}</strong></div>)}</div>
       {earnings.length===0 && <p className="quiet"><BadgeCheck size={15}/> Aucun gain enregistré pour le moment.</p>}
-      {earnings.length>0 && <p className="quiet"><TriangleAlert size={15}/> Ce total n'est pas le solde à payer. Les paiements seront suivis séparément.</p>}
+      {earnings.length>0 && <p className="quiet"><TriangleAlert size={15}/> Ce total n'est pas le solde à payer. Consulte Paies et avances pour les versements et soldes nets.</p>}
     </>}
   </section>
 }
