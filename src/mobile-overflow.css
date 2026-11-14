@@ -1,0 +1,54 @@
+/* Phase 6 corrective pass: eliminate iPhone intrinsic-width overflows. */
+:root{--ot-safe-top:env(safe-area-inset-top,0px)}
+html,body,#root{width:100%;max-width:100%;overflow-x:clip}
+.app-shell,.content,.p5,.p5-hero,.p5-buyers,.p5-form,.p5-balances,.p5-journal,
+.field-day,.field-panel,.field-group-cards,.field-assign-list,
+.payroll,.reports-module{min-width:0;max-width:100%;box-sizing:border-box}
+.app-shell{overflow-x:clip}
+.content{width:100%;min-width:0}
+.topbar{position:sticky;top:0;z-index:50;box-sizing:border-box;
+ height:auto;min-height:calc(64px + var(--ot-safe-top));
+ padding-top:var(--ot-safe-top);background:#f7f6ef}
+.bottom-nav{z-index:50}
+.field-sheet-layer{z-index:80}
+.p5-two,.p5-hero-row,.p5-metrics,.reports-controls{grid-template-columns:repeat(2,minmax(0,1fr))}
+.p5-two>*,
+.p5-field,
+.p5-field input,
+.p5-field select,
+.p5-field textarea,
+.reports-controls label,
+.reports-controls input{box-sizing:border-box;max-width:100%;min-width:0}
+.p5-field input,.p5-field select,.p5-field textarea{width:100%;display:block}
+.p5-field input[type=date],.reports-controls input[type=date],
+.field-date-label input[type=date]{
+ min-width:0;max-width:100%;width:100%;font-size:16px;
+ -webkit-min-logical-width:0
+}
+.p5-field input[type=date]::-webkit-date-and-time-value,
+.reports-controls input[type=date]::-webkit-date-and-time-value{min-width:0}
+.p5-form,.p5-buyers,.p5-journal,.p5-balances{overflow-wrap:anywhere}
+.p5-tabs{max-width:100%;min-width:0;overscroll-behavior-inline:contain;scrollbar-width:none;
+ -webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;padding-left:0;padding-right:0}
+.p5-tabs button{flex-shrink:0;scroll-snap-align:start;min-height:43px}
+.p5-buyers,.p5-form,.p5-balances,.p5-journal{margin-inline:0}
+.p5-hero-row strong,.p5-hero-foot strong,.p5-metrics strong{overflow-wrap:anywhere}
+.p5-form{gap:11px}
+.p5-section-heading{min-width:0;flex-wrap:wrap}
+.p5-section-heading>div{min-width:0}
+.p5-section-heading h3{overflow-wrap:anywhere}
+.field-assign,.p5-entry{min-width:0}
+.field-date-label{min-width:0;flex:1;max-width:190px}
+.p5-balance-row>span{min-width:0;overflow-wrap:anywhere}
+@media(max-width:360px){
+ .p5-two{grid-template-columns:minmax(0,1fr)}
+ .p5-hero-row strong{font-size:16px}
+ .p5-hero-foot strong{font-size:16px}
+ .p5-tabs button{padding-inline:10px}
+ .p5-metrics strong{font-size:13px}
+ .content{padding-inline:12px}
+}
+@media print{
+ html,body,#root,.app-shell{overflow:visible!important}
+ .topbar,.bottom-nav{display:none!important}
+}
