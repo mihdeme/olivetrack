@@ -115,9 +115,11 @@ export function FieldDay(){
  async function bulk(action:'present'|'absent'|'assign',groupId:string|null=null){
   if(!selected.length)return
   if(action==='absent'&&!window.confirm('Marquer ces ouvriers absents ? Cette action échouera si une rémunération existe déjà.'))return
+  const ids=action==='assign'?selected.filter(id=>presentIds.has(id)):selected
+  if(ids.length===0){setError('Aucun ouvrier présent sélectionné pour cette affectation.');return}
   await perform(async()=>{
    const target=day??await ensureDay(date)
-   await bulkAttendance({dayId:target.id,workerIds:selected,action,groupId})
+   await bulkAttendance({dayId:target.id,workerIds:ids,action,groupId})
   })
  }
  async function createNewGroup(e:FormEvent){
@@ -164,7 +166,7 @@ export function FieldDay(){
     </div>
    })}</div>
    {visible.length===0&&<div className="field-empty">Aucun ouvrier ne correspond à ce filtre.</div>}
-   {selectMode&&selected.length>0&&<div className="field-bulk-bar"><strong>{selected.length} sélectionné(s)</strong><div><button disabled={busy} onClick={()=>void bulk('present')}>Présents</button><button disabled={busy} onClick={()=>void bulk('absent')}>Absents</button>{groups.length>0&&<select aria-label="Affecter au groupe" disabled={busy} value="" onChange={e=>e.target.value&&void bulk('assign',e.target.value)}><option value="">Affecter au groupe…</option>{groups.map(g=><option value={g.id} key={g.id}>{g.name}</option>)}</select>}</div></div>}
+   {selectMode&&selected.length>0&&<div className="field-bulk-bar"><strong>{selected.length} sélectionné(s)</strong><div><button disabled={busy} onClick={()=>void bulk('present')}>Présents</button><button disabled={busy} onClick={()=>void bulk('absent')}>Absents</button>{groups.length>0&&<select aria-label="Affecter au groupe" disabled={busy} value="" onChange={e=>e.target.value&&void bulk('assign',e.target.value)}><option value="">Affecter présents au groupe…</option>{groups.map(g=><option value={g.id} key={g.id}>{g.name}</option>)}</select>}</div></div>}
   </section>:tab==='groupes'?<section className="field-panel">
    <div className="field-heading"><div><span className="field-kicker">ORGANISATION</span><h3>Groupes de récolte</h3></div><span className="field-count">{groups.length} groupes</span></div>
    <form className="field-inline" onSubmit={e=>void createNewGroup(e)}><input value={groupName} maxLength={80} placeholder="Nom du nouveau groupe" onChange={e=>setGroupName(e.target.value)}/><button disabled={busy||!groupName.trim()} type="submit"><Plus size={17}/> Créer</button></form>
