@@ -55,6 +55,13 @@ test('PDF portrait preserves width and does not skip empty tables',()=>{
  assert.match(text,/\/MediaBox \[0 0 595 842\]/)
  assert.ok(text.startsWith('%PDF-1.4'))
 })
+test('Do not silently replace unsupported script glyphs in payroll names',()=>{
+ assert.throws(()=>makeReportPdf({
+  title:'Paie des ouvriers',subtitle:'Contrôle unicode',period:'Novembre 2026',generated:'14/11/2026',
+  blocks:[{type:'table',title:'Ouvriers',columns:[{title:'NOM',key:'name',width:1}],
+   rows:[{name:'محمد'}]}]
+ }),/Caractère non pris en charge/)
+})
 test('All four business reports are wired to the Bilans screen',()=>{
  const app=readFileSync('src/App.tsx','utf8')
  const ui=readFileSync('src/Phase6.tsx','utf8')
