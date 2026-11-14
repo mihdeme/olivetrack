@@ -1,0 +1,11 @@
+{
+  "name": "OliveTrack — Gestion oléicole",
+  "short_name": "OliveTrack",
+  "description": "Gestion privée de campagne oléicole",
+  "start_url": "/olivetrack/",
+  "scope": "/olivetrack/",
+  "display": "standalone",
+  "background_color": "#f6f8f4",
+  "theme_color": "#334e36",
+  "lang": "fr"
+}
