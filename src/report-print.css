@@ -80,3 +80,16 @@
  .report-page{width:210mm!important;height:295mm!important;min-height:295mm!important;margin:0!important;overflow:hidden!important;box-shadow:none!important;print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}
  .report-page:last-child{break-after:auto!important;page-break-after:auto!important}
 }
+
+/* Phase 7 — protected backup controls, never included in printed reports. */
+.backup-panel{margin:24px 0 15px;padding:17px;background:#fff;border:1px solid #dfe7dc;border-radius:15px;max-width:100%;min-width:0}
+.backup-panel-title{display:flex;align-items:flex-start;gap:11px;color:#315e41}
+.backup-panel-title strong{display:block;font-size:15px;color:#20472e}
+.backup-panel-title p{font-size:11px;color:#819484;line-height:1.5;margin:5px 0 0}
+.backup-panel>p{font-size:12px;line-height:1.6;color:#536b58}
+.backup-export{display:flex;justify-content:center;align-items:center;gap:8px;background:#193e2e;color:#fff;border:0;border-radius:11px;padding:13px 16px;font-size:12px;font-weight:750;min-height:46px;width:100%}
+.backup-export:disabled{opacity:.65}
+.backup-caution{display:flex;align-items:flex-start;gap:9px;margin-top:12px;background:#fdf4e7;border:1px solid #eddcc4;border-radius:10px;padding:11px;font-size:11px;line-height:1.5;color:#88633e}
+.backup-caution svg{flex-shrink:0}
+.backup-success{display:flex;align-items:start;gap:8px;font-size:12px;color:#376943;line-height:1.5}
+@media print{.backup-panel{display:none!important}}
