@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
-import { ArrowDownLeft, ArrowRight, ArrowUpRight, BookOpenText, Check, CircleHelp, Coins, FileText, Landmark, Pencil, Plus, ReceiptText, RotateCcw, Search, Scale, Truck, UsersRound, X } from 'lucide-react'
+import { ArrowDownLeft, ArrowRight, ArrowUpRight, BookOpenText, Check, CircleHelp, Coins, FileText, Landmark, Pencil, Plus, RotateCcw, Search, Scale, Truck, X } from 'lucide-react'
 import { listBuyers, saveBuyer, listLedger, createEntry, reverseEntry, totals, parseKg, parseDh, formatKg, expectedSale, methodLabels, categoryLabels, kindLabels, type Buyer, type Entry, type ExpenseCategory, type PaymentMethod, type NewEntry } from './phase5-data'
 import { readPayroll } from './phase4-data'
 import { money } from './phase3-data'
+import { parseFixed } from './phase5-data'
+import './phase5.css'
 type Section='sale'|'receipt'|'expense'|'ledger'
 const sections:{id:Section;label:string}[]=[{id:'sale',label:'Pesées & ventes'},{id:'receipt',label:'Encaissements'},{id:'expense',label:'Dépenses'},{id:'ledger',label:'Journal'}]
 const categories=Object.entries(categoryLabels) as [ExpenseCategory,string][]
@@ -80,12 +82,12 @@ export function Phase5(){
  const currentBuyer=buyerBalances.find(b=>b.buyer.id===buyerId)
  const reversedIds=useMemo(()=>new Set(entries.filter(e=>e.reversal_of).map(e=>e.reversal_of)),[entries])
  const parsedWeight=parseKg(weight)
- const parsedPrice=parseDh(price)
+ const parsedPrice=parseFixed(price,100,10000000)
  const parsedAmount=parseDh(amount)
  const sackNumber=sacks.trim()===''?null:Number(sacks)
  const validSacks=sackNumber===null||(Number.isSafeInteger(sackNumber)&&sackNumber>=1&&sackNumber<=100000)
  const saleValue=parsedWeight!==null&&parsedPrice!==null?expectedSale(parsedWeight,parsedPrice):null
- const saveReady=section==='sale'?Boolean(buyerId && parsedWeight && parsedPrice && saleValue && validSacks):
+ const saveReady=section==='sale'?Boolean(buyerId && parsedWeight && parsedPrice && saleValue && saleValue<=1000000000000 && validSacks):
   section==='receipt'?Boolean(buyerId&&parsedAmount):section==='expense'?Boolean(parsedAmount):false
  const clean=()=>{setWeight('');setPrice('');setSacks('');setAmount('');setReference('');setNote('');setHarvestDate('');requestKey.current=crypto.randomUUID()}
  function switchTab(next:Section){setSection(next);setError('');setNotice('');clean()}
