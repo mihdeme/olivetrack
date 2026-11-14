@@ -49,9 +49,19 @@ export async function getHarvestForDay(dayId: string): Promise<{harvests: GroupH
 }
 
 export async function getAllEarnings(): Promise<WorkerEarning[]> {
-  const { data, error } = await db().from('worker_earnings').select('harvest_id,worker_id,amount_cents')
-  if (error) throw Error(error.message)
-  return (data ?? []) as WorkerEarning[]
+  // Supabase limits normal REST selects to the configured maximum row count
+  // (often 1000). At 90 workers that limit is crossed after a few harvest days.
+  const result: WorkerEarning[] = []
+  for (let offset=0;;offset+=500) {
+    const {data,error}=await db().from('worker_earnings')
+      .select('harvest_id,worker_id,amount_cents')
+      .order('harvest_id').order('worker_id').range(offset,offset+499)
+    if (error) throw Error(error.message)
+    const page=(data??[]) as WorkerEarning[]
+    result.push(...page)
+    if (page.length<500) return result
+    if (result.length>=50000) throw Error('Historique des rémunérations trop volumineux.')
+  }
 }
 
 export async function saveHarvest(groupId: string, sacks: number, rateCents: number): Promise<void> {
