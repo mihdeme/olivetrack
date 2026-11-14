@@ -100,12 +100,12 @@ export function buyerRows(data:ReportData,start:string,end:string){
   const sales=['sale','sale_reversal'],receipts=['receipt','receipt_reversal']
   return {name:b.name,opening:sums(sales,d=>d<start)-sums(receipts,d=>d<start),
    sold:sums(sales,d=>d>=start),received:sums(receipts,d=>d>=start),
-   closing:sums(sales,d=>true)-sums(receipts,d=>true)}
+   closing:sums(sales,()=>true)-sums(receipts,()=>true)}
  }).filter(b=>b.opening!==0||b.sold!==0||b.received!==0||b.closing!==0)
   .sort((a,b)=>a.name.localeCompare(b.name,'fr'))
 }
 export function financeRows(data:ReportData,start:string,end:string){
- const rows=data.ledger.filter(x=>period(x.entry_date,start,end))
+ const rows:{date:string;kind:string;detail:string;sales:number;received:number;expense:number;wages:number}[]=data.ledger.filter(x=>period(x.entry_date,start,end))
   .map(e=>({
    date:e.entry_date,kind:e.kind,detail:e.buyer_id?data.buyers.find(b=>b.id===e.buyer_id)?.name??'Acheteur supprimé':
     e.category??'Dépense',
