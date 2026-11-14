@@ -27,7 +27,7 @@
 .reports-viewport{width:100%;overflow:hidden;min-width:0;border-radius:8px;padding:0;background:#e7ece5}
 .reports-zoom{transform-origin:top left;width:max-content;min-width:0}
 .report-document{width:210mm;max-width:none;margin:0}
-.report-page{position:relative;display:flex;flex-direction:column;box-sizing:border-box;width:210mm;height:295mm;padding:14mm 14mm 13mm;background:white;color:#25392c;font-family:Arial,Helvetica,sans-serif;page-break-after:always;break-after:page;overflow:hidden}
+.report-page{position:relative;display:flex;flex-direction:column;box-sizing:border-box;width:210mm;height:295mm;padding:14mm 14mm 23mm;background:white;color:#25392c;font-family:Arial,Helvetica,sans-serif;page-break-after:always;break-after:page;overflow:hidden}
 .report-page:last-child{page-break-after:auto;break-after:auto}
 .report-paper-head{display:flex;align-items:center;justify-content:space-between;gap:5mm;padding-bottom:7mm;border-bottom:.5mm solid #284d38;flex-shrink:0}
 .report-brand{display:flex;align-items:center;gap:3mm}
@@ -57,7 +57,7 @@
 .report-notes{margin-top:8mm;padding:3mm 4mm;background:#f7f9f4;border-left:1mm solid #adc4ab;break-inside:avoid;flex-shrink:0}
 .report-notes strong{font:700 8pt Arial,sans-serif;color:#34583c}
 .report-notes p{font:7.5pt/1.5 Arial,sans-serif;color:#68796b;margin:2mm 0 0}
-.report-footer{display:flex;justify-content:space-between;align-items:flex-end;gap:5mm;border-top:.2mm solid #cad8cb;padding-top:3mm;margin-top:auto;flex-shrink:0;font:7pt Arial,sans-serif;color:#778778}
+.report-footer{position:absolute;bottom:13mm;left:14mm;right:14mm;display:flex;justify-content:space-between;align-items:flex-end;gap:5mm;border-top:.2mm solid #cad8cb;padding-top:3mm;margin-top:auto;flex-shrink:0;font:7pt Arial,sans-serif;color:#778778}
 .report-footer>div strong{display:block;font-size:7.5pt;letter-spacing:.7pt;color:#254b34}
 .report-footer>div span{display:block;margin-top:1mm}
 .report-footer>span{font-variant-numeric:tabular-nums;white-space:nowrap}
