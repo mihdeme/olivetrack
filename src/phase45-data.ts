@@ -44,3 +44,20 @@ export async function bulkAttendance(input:{
  })
  if(error)throw Error(error.message)
 }
+
+export type DayStatus = 'absent' | 'unassigned' | 'group' | IndividualMode
+
+export async function changeWorkerDayStatus(input:{
+  dayId:string;workerId:string;status:DayStatus
+  groupId:string|null; quantity:number|null; rateCents:number|null
+}):Promise<void>{
+ const {error}=await db().rpc('change_worker_day_status',{
+  p_day_id:input.dayId,
+  p_worker_id:input.workerId,
+  p_status:input.status,
+  p_group_id:input.groupId,
+  p_quantity:input.quantity,
+  p_rate_cents:input.rateCents,
+ })
+ if(error)throw Error(error.message)
+}

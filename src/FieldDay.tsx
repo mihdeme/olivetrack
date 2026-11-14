@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react'
-import { ArrowLeft, ArrowRight, CalendarDays, Check, CheckCheck, ChevronDown, CircleDollarSign, Clock3, Layers3, Plus, Search, Sprout, UsersRound, X } from 'lucide-react'
-import { listWorkers, getDay, ensureDay, listGroups, listAttendance, createGroup, assignGroup, type Worker, type WorkDay, type HarvestGroup, type Attendance } from './phase2-data'
-import { bulkAttendance, listIndividualCompensations, saveIndividualCompensation, type IndividualCompensation, type IndividualMode } from './phase45-data'
+import { ArrowLeft, ArrowRight, CalendarDays, Check, CheckCheck, CircleDollarSign, Clock3, Layers3, Pencil, Plus, Search, Sprout, UsersRound } from 'lucide-react'
+import { listWorkers, getDay, ensureDay, listGroups, listAttendance, createGroup, type Worker, type WorkDay, type HarvestGroup, type Attendance } from './phase2-data'
+import { bulkAttendance, listIndividualCompensations, type IndividualCompensation } from './phase45-data'
 import { HarvestAccounting } from './Phase3'
-import { money, parseRateCents, parseSacks } from './phase3-data'
+import { money } from './phase3-data'
 import { getHarvestForDay, type GroupHarvest } from './phase3-data'
+import { WorkerStatusSheet } from './WorkerStatusSheet'
 
 type Tab='pointage'|'groupes'|'gains'
 type Filter='all'|'present'|'absent'|'unassigned'
@@ -19,47 +20,6 @@ function adjacentDate(iso:string,days:number){
 function message(e:unknown){return e instanceof Error?e.message:'Une erreur est survenue.'}
 function formatDate(s:string){return new Date(s+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}
 
-function PersonPaymentSheet({worker,day,existing,onClose,onSaved}:{
- worker:Worker;day:WorkDay;existing?:IndividualCompensation;onClose:()=>void;onSaved:()=>Promise<void>
-}){
- const [mode,setMode]=useState<IndividualMode>(existing?.mode??'daily')
- const [quantity,setQuantity]=useState(String(existing?.quantity??1))
- const [rate,setRate]=useState(String((existing?.rate_cents??12000)/100))
- const [busy,setBusy]=useState(false)
- const [error,setError]=useState('')
- const q=mode==='daily'?1:parseSacks(quantity)
- const cents=parseRateCents(rate)
- async function submit(e:FormEvent){
-  e.preventDefault()
-  if(cents===null||q===null||q<1){setError('Saisis une quantité et un tarif valides.');return}
-  if(existing&&!window.confirm('Cette correction recalculera les gains de cet ouvrier pour cette date. Confirmer ?'))return
-  setBusy(true);setError('')
-  try{await saveIndividualCompensation({dayId:day.id,workerId:worker.id,mode,quantity:q,rateCents:cents});await onSaved();onClose()}
-  catch(e){setError(message(e))}finally{setBusy(false)}
- }
- async function clear(){
-  if(!existing||!window.confirm('Supprimer la rémunération individuelle de cette date ? Le solde de l’ouvrier sera recalculé.'))return
-  setBusy(true);setError('')
-  try{await saveIndividualCompensation({dayId:day.id,workerId:worker.id,mode:existing.mode,quantity:0,rateCents:existing.rate_cents});await onSaved();onClose()}
-  catch(e){setError(message(e))}finally{setBusy(false)}
- }
- return <div className="field-sheet-layer" role="presentation" onClick={onClose}>
-   <section className="field-sheet" role="dialog" aria-modal="true" aria-labelledby="pay-sheet-title" onClick={e=>e.stopPropagation()}>
-     <div className="field-sheet-handle"/>
-     <div className="field-sheet-heading"><div><span className="field-kicker">RÉMUNÉRATION INDIVIDUELLE</span><h3 id="pay-sheet-title">{worker.full_name}</h3></div><button className="field-icon" aria-label="Fermer" onClick={onClose}><X size={19}/></button></div>
-     <form onSubmit={submit} className="field-sheet-form">
-       <label>Mode de rémunération<select value={mode} onChange={e=>{const next=e.target.value as IndividualMode;setMode(next);if(!existing)setRate(next==='daily'?'120':'100')}}>
-         <option value="daily">À la journée</option><option value="individual_sacks">Individuel au sac</option></select></label>
-       {mode==='individual_sacks'&&<label>Nombre de sacs<input type="number" min="1" max="100000" inputMode="numeric" required value={quantity} onChange={e=>setQuantity(e.target.value)}/></label>}
-       <label>{mode==='daily'?'Tarif journalier (DH)':'Tarif par sac (DH)'}<input inputMode="decimal" value={rate} required onChange={e=>setRate(e.target.value)}/></label>
-       <div className="field-sheet-preview"><span>Total calculé</span><strong>{q!==null&&cents!==null?money(q*cents):'—'}</strong></div>
-       {error&&<p className="data-error" role="alert">{error}</p>}
-       <button type="submit" disabled={busy||q===null||cents===null} className="field-primary"><Check size={18}/> Enregistrer la rémunération</button>
-       {existing&&<button type="button" className="field-destructive" disabled={busy} onClick={()=>void clear()}>Remettre cette rémunération à zéro</button>}
-     </form>
-   </section>
- </div>
-}
 export function FieldDay(){
  const [date,setDate]=useState(localDate)
  const [day,setDay]=useState<WorkDay|null>(null)
@@ -106,7 +66,13 @@ export function FieldDay(){
  })
  async function changePresence(workerId:string){
   const isPresent=presentIds.has(workerId)
-  if(isPresent&&!window.confirm('Retirer la présence de cet ouvrier ? Les rémunérations déjà enregistrées devront d’abord être supprimées.'))return
+  if(isPresent && (individual.some(p=>p.worker_id===workerId) ||
+      attendance.some(a=>a.worker_id===workerId && a.group_id && harvests.some(h=>h.group_id===a.group_id)))){
+    const worker=workers.find(w=>w.id===workerId)
+    if(worker)setEditing(worker)
+    return
+  }
+  if(isPresent&&!window.confirm('Marquer cet ouvrier absent pour cette journée ?'))return
   await perform(async()=>{
    const target=day??await ensureDay(date)
    await bulkAttendance({dayId:target.id,workerIds:[workerId],action:isPresent?'absent':'present'})
@@ -126,9 +92,6 @@ export function FieldDay(){
   e.preventDefault()
   if(!groupName.trim())return
   await perform(async()=>{const target=day??await ensureDay(date);await createGroup(target.id,groupName.trim());setGroupName('')})
- }
- async function moveWorker(row:Attendance,target:string){
-  await perform(()=>assignGroup(row.id,target||null))
  }
  const groupSacks=harvests.reduce((s,h)=>s+h.sacks,0)
  const soloSacks=individual.filter(x=>x.mode==='individual_sacks').reduce((s,x)=>s+x.quantity,0)
@@ -160,7 +123,8 @@ export function FieldDay(){
     const hasPay=individual.some(x=>x.worker_id===w.id)
     return <div className="field-person" key={w.id}>
       <span className="field-avatar">{w.full_name.slice(0,1).toUpperCase()}</span>
-      <div className="field-person-name"><strong>{w.full_name}</strong><small>{!row?'Absent':group?.name??(hasPay?'Rémunération individuelle':'Présent · sans groupe')}</small></div>
+      <button type="button" className="field-person-name field-person-edit" aria-label={'Modifier le statut de '+w.full_name} onClick={()=>setEditing(w)}><strong>{w.full_name}</strong><small>{!row?'Absent':group?.name??(hasPay?'Rémunération individuelle':'Présent · sans groupe')}</small></button>
+      {!selectMode&&<button type="button" className="field-edit-icon" aria-label={'Changer la rémunération ou le groupe de '+w.full_name} onClick={()=>setEditing(w)}><Pencil size={15}/></button>}
       {selectMode?<input type="checkbox" aria-label={'Sélectionner '+w.full_name} checked={selected.includes(w.id)} onChange={e=>setSelected(ids=>e.target.checked?[...ids,w.id]:ids.filter(id=>id!==w.id))}/>:
       <button disabled={busy} className={row?'field-present active':'field-present'} aria-label={(row?'Marquer absent : ':'Marquer présent : ')+w.full_name} onClick={()=>void changePresence(w.id)}>{row?<Check size={18}/>:<Plus size={18}/>}</button>}
     </div>
@@ -179,7 +143,7 @@ export function FieldDay(){
    <div className="field-heading"><div><span className="field-kicker">AFFECTATIONS</span><h3>Personnes présentes</h3></div></div>
    <div className="field-assign-list">{attendance.map(a=>{
     const w=workers.find(x=>x.id===a.worker_id)
-    return <label key={a.id} className="field-assign"><span>{w?.full_name??'Ouvrier'}</span><span className="field-select-wrap"><select disabled={busy} aria-label={'Groupe de '+(w?.full_name??'ouvrier')} value={a.group_id??''} onChange={e=>void moveWorker(a,e.target.value)}><option value="">Sans groupe</option>{groups.map(g=><option key={g.id} value={g.id}>{g.name}</option>)}</select><ChevronDown size={15}/></span></label>
+    return <div key={a.id} className="field-assign"><span>{w?.full_name??'Ouvrier'}</span><button type="button" className="field-assignment-action" disabled={!w||busy} aria-label={'Modifier statut et groupe de '+(w?.full_name??'ouvrier')} onClick={()=>w&&setEditing(w)}><span>{groups.find(g=>g.id===a.group_id)?.name??(individual.some(p=>p.worker_id===a.worker_id)?'Individuel':'Sans groupe')}</span><Pencil size={15}/></button></div>
    })}</div>
    {attendance.length===0&&<div className="field-empty">Pointe d’abord la présence des ouvriers.</div>}
   </section>:<section className="field-panel">
@@ -193,7 +157,7 @@ export function FieldDay(){
    <HarvestAccounting day={day} groups={groups} attendance={attendance} workers={workers} onChanged={refresh}/>
    <p className="field-footnote"><Clock3 size={16}/> Les montants sont des gains acquis, pas des paiements réellement effectués.</p>
   </section>}
-  {editing&&day&&<PersonPaymentSheet key={editing.id} worker={editing} day={day} existing={individual.find(x=>x.worker_id===editing.id)} onClose={()=>setEditing(null)} onSaved={refresh}/>}
+  {editing&&day&&<WorkerStatusSheet key={editing.id+'-'+date} worker={editing} day={day} attendance={attendance.find(a=>a.worker_id===editing.id)} individual={individual.find(x=>x.worker_id===editing.id)} groups={groups} lockedGroupIds={harvests.map(h=>h.group_id)} onClose={()=>setEditing(null)} onSaved={refresh}/>}
   <footer className="field-bottom-note">OliveTrack <span>·</span> Field Edition</footer>
  </div>
 }

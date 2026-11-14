@@ -145,3 +145,16 @@ body{background:var(--field-paper)}button,input,select,textarea{font-family:inhe
 .field-worker-search{margin-top:14px}
 .phase2 .field-sheet .editor{background:transparent;border:0;box-shadow:none;padding:0;margin:0}
 .phase2 .field-sheet .editor h3{font-family:Georgia,serif;font-size:23px;font-weight:500;color:var(--field-ink)}
+
+/* Inline daily-status editing: accessible from Pointage, Groupes and Gains. */
+.field-person-edit{background:transparent;border:0;text-align:left;padding:5px 0;cursor:pointer;color:inherit;min-width:0}
+.field-person-edit:focus-visible,.field-edit-icon:focus-visible,.field-assignment-action:focus-visible{outline:2px solid var(--field-moss);outline-offset:2px;border-radius:6px}
+.field-edit-icon{flex-shrink:0;display:grid;place-items:center;width:34px;height:38px;border-radius:9px;border:1px solid #e0e8dc;background:#f8faf5;color:var(--field-moss)}
+.field-assignment-action{display:flex;align-items:center;gap:8px;padding:9px 11px;min-height:38px;border:1px solid #dce5d9;background:#f8faf5;border-radius:10px;color:var(--field-dark);font-size:11px;max-width:53%;cursor:pointer}
+.field-assignment-action span{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.field-assignment-action svg{flex-shrink:0}
+.field-status-sheet .field-sheet-form{gap:15px}
+.field-status-note,.field-status-locked{display:flex;align-items:flex-start;gap:9px;font-size:12px;line-height:1.5;padding:12px;border-radius:11px;background:#f0f3eb;color:#64765f}
+.field-status-note svg,.field-status-locked svg{flex-shrink:0;margin-top:1px}
+.field-status-locked{background:#fff1e8;color:#915637;border:1px solid #e9cbbb}
+.field-status-sheet .field-primary:disabled{opacity:.48;cursor:not-allowed}
