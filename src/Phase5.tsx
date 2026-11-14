@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
-import { ArrowDownLeft, ArrowRight, ArrowUpRight, BookOpenText, Check, CircleHelp, Coins, FileText, Landmark, Pencil, Plus, RotateCcw, Search, Scale, Truck, X } from 'lucide-react'
+import { ArrowDownLeft, ArrowRight, ArrowUpRight, BookOpenText, Check, CircleHelp, Coins, FileText, Landmark, Pencil, Plus, CalendarDays, RotateCcw, Search, Scale, Truck, X } from 'lucide-react'
 import { listBuyers, saveBuyer, listLedger, createEntry, reverseEntry, totals, parseKg, parseDh, formatKg, expectedSale, methodLabels, categoryLabels, kindLabels, type Buyer, type Entry, type ExpenseCategory, type PaymentMethod, type NewEntry } from './phase5-data'
 import { readPayroll } from './phase4-data'
 import { money } from './phase3-data'
@@ -12,6 +12,23 @@ const methods=Object.entries(methodLabels) as [PaymentMethod,string][]
 const dateNow=()=>{const x=new Date();return [x.getFullYear(),String(x.getMonth()+1).padStart(2,'0'),String(x.getDate()).padStart(2,'0')].join('-')}
 const errorText=(e:unknown)=>e instanceof Error?e.message:'Une erreur est survenue.'
 const isReversal=(kind:string)=>kind.endsWith('_reversal')
+
+// iOS Safari's native date text has an intrinsic width larger than narrow forms.
+// Keep the native picker for touch interaction, but paint its value ourselves in a
+// bounded wrapper so the browser cannot widen the field beyond its card.
+function DateControl({value,onChange,required=false,label}:{
+ value:string;onChange:(value:string)=>void;required?:boolean;label:string
+}){
+ const formatted=value?new Date(value+'T12:00:00').toLocaleDateString('fr-FR',{
+  day:'numeric',month:'short',year:'numeric'
+ }):'Choisir une date'
+ return <span className="p5-date-control">
+  <span className={'p5-date-value'+(value?'':' p5-date-placeholder')} aria-hidden="true">{formatted}</span>
+  <CalendarDays size={18} aria-hidden="true"/>
+  <input aria-label={label} type="date" value={value} required={required}
+   onChange={e=>onChange(e.target.value)} />
+ </span>
+}
 
 type BuyerSheetProps={buyer?:Buyer;onClose:()=>void;onSaved:(id:string)=>Promise<void>}
 function BuyerSheet({buyer,onClose,onSaved}:BuyerSheetProps){
@@ -159,7 +176,7 @@ export function Phase5(){
    </div>}
    {section!=='ledger'&&<form className="p5-form" onSubmit={e=>void submit(e)}>
     <div className="p5-section-heading"><div><span className="field-kicker">{section==='sale'?'LIVRAISON D’OLIVES':section==='receipt'?'ARGENT REÇU':'CHARGES D’EXPLOITATION'}</span><h3>{section==='sale'?'Nouveau bon de pesée':section==='receipt'?'Nouvel encaissement':'Nouvelle dépense'}</h3></div></div>
-    <label className="p5-field">Date de {section==='sale'?'livraison':section==='receipt'?'réception':'paiement'}<input required type="date" value={date} onChange={e=>setDate(e.target.value)}/></label>
+    <label className="p5-field">Date de {section==='sale'?'livraison':section==='receipt'?'réception':'paiement'}<DateControl label="Date de l'opération" required value={date} onChange={setDate}/></label>
     {section==='sale'&&<>
      <div className="p5-two">
       <label className="p5-field">Poids net (kg) *<input required inputMode="decimal" placeholder="Ex. 123,450" value={weight} onChange={e=>setWeight(e.target.value)}/></label>
@@ -167,7 +184,7 @@ export function Phase5(){
      </div>
      <div className="p5-two">
       <label className="p5-field">Sacs livrés (facultatif)<input type="number" min="1" max="100000" inputMode="numeric" value={sacks} onChange={e=>setSacks(e.target.value)} placeholder="Ex. 6"/></label>
-      <label className="p5-field">Date de récolte (facultative)<input type="date" value={harvestDate} onChange={e=>setHarvestDate(e.target.value)}/></label>
+      <label className="p5-field">Date de récolte (facultative)<DateControl label="Date de récolte facultative" value={harvestDate} onChange={setHarvestDate}/></label>
      </div>
      <div className="p5-calculation"><span>Valeur du bon</span><strong>{saleValue?money(saleValue):'—'}</strong><small>Arrondi au centime, à partir du poids net et du prix.</small></div>
     </>}
