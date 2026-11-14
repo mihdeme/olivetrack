@@ -1,9 +1,9 @@
 # OliveTrack 🌿
 
-Application mobile de gestion de campagne oléicole (projet privé).
+Application mobile de gestion de campagne oléicole. Code public ; données d'exploitation privées dans Supabase.
 
 ## État du projet
-**Phase 1 validée côté téléphone** : application mobile accessible et authentification Supabase fonctionnelle. **Phase 2 validée sur iPhone** : ouvriers, présences et groupes. **Phase 3 en validation** : sacs récoltés par groupe, tarif par sac et répartition exacte des gains individuels. Les **paiements** (phase 4), pesées, ventes et caisse ne sont pas encore implémentés.
+**Phases 1, 2 et 3 validées sur iPhone** : connexion, ouvriers, présences, groupes, sacs et calcul exact des rémunérations. **Phase 4 en validation** : avances, paies hebdomadaires, versements partiels et soldes de départ, avec historique comptable immuable. Pesées, ventes, dépenses et caisse générale restent en phase 5.
 
 ## Structure
 - `src/App.tsx` : connexion et navigation mobile.
@@ -14,7 +14,9 @@ Application mobile de gestion de campagne oléicole (projet privé).
 - `supabase/migrations/` : SQL des tables, règles RLS et permissions.
 - `src/Phase3.tsx` et `src/phase3-data.ts` : sacs, tarifs, rémunérations calculées en centimes.
 - `docs/phase-3-regles-et-tests.md` : calculs et règles de verrouillage historiques.
-- `tests/` : contrôles de phases 1–3.
+- `src/Phase4.tsx` et `src/phase4-data.ts` : avances, paiements et soldes par ouvrier.
+- `docs/phase-4-paiements-et-tests.md` : règles de journalisation et validations.
+- `tests/` : contrôles de phases 1–4.
 - `docs/architecture-securite.md` : décisions de la phase 0.
 
 ## Démarrage local
@@ -35,13 +37,15 @@ L'interface accepte uniquement les comptes Supabase Auth existants. Elle n'expos
 4. Une personne ne peut avoir qu'une seule présence par date et ne peut donc appartenir qu'à un seul groupe ce jour-là.
 5. **Phase 3** : après avoir affecté les ouvriers, renseigner le nombre de sacs et le tarif (100 DH par défaut). Les gains sont répartis exactement entre les membres.
 6. Une fois les sacs enregistrés, le groupe est verrouillé. Pour changer les membres, remettre d'abord les sacs à zéro, modifier la composition et saisir à nouveau la récolte.
-7. La rémunération gagnée n'est **pas** le paiement effectivement effectué. Les paiements seront traités en phase 4.
+7. Dans **Ouvriers → Paies et avances**, sélectionner un ouvrier, saisir le montant effectivement remis, la date et le type (avance / paie du mercredi / partiel / solde de départ), puis confirmer.
+8. La rémunération gagnée n'est **pas** le paiement effectué. Le solde = gagné − sommes effectivement versées. Une avance peut créer un solde négatif temporaire.
+9. Une erreur de paiement se corrige par **contrepassation** : l'original reste dans l'historique. Ne jamais enregistrer une sortie d'argent fictive sur le compte d'un véritable ouvrier.
 
 ## Hébergement
-Le code reste privé sur GitHub. GitHub Pages sur dépôt privé exige un plan GitHub payant éligible ; de plus, il faut vérifier les conditions d'utilisation pour une application de gestion commerciale. Le déploiement public n'est **pas activé** à ce stade. Une plateforme statique adaptée pourra héberger la même application.
+Le code est public sur GitHub et OliveTrack est disponible sur https://mihdeme.github.io/olivetrack/ . Les données restent privées via Supabase Auth et RLS. La compatibilité des conditions d'utilisation de GitHub Pages avec l'exploitation de l'outil doit être revue avant une utilisation commerciale régulière.
 
-## Configuration en attente
-- Créer le compte administrateur Supabase Auth depuis le tableau de bord (sans transmettre les identifiants).
-- Désactiver les inscriptions publiques dans le dashboard Supabase.
-- Configurer les variables publiques de build sur la plateforme de déploiement choisie.
-- Vérifier l'authentification réelle depuis un téléphone et confirmer la fermeture de la phase 1.
+## Configuration
+- Connexion Supabase Auth configurée pour le propriétaire ; inscriptions publiques désactivées.
+- Variables de repository GitHub Actions : `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_OWNER_USER_ID`.
+- Chaque modification fusionnée dans `main` déclenche les contrôles et le déploiement Pages.
+- Ne jamais saisir de faux paiements sur de véritables comptes ouvriers pour tester l'application.
