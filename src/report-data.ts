@@ -20,7 +20,9 @@ type Table='work_days'|'harvest_groups'|'attendances'|'group_harvests'|'worker_e
 async function pages<T>(table:Table,columns:string,sort:string):Promise<T[]>{
  const result:T[]=[]
  for(let offset=0;;offset+=500){
-  const {data,error}=await db().from(table).select(columns).order(sort).range(offset,offset+499)
+  const query=db().from(table).select(columns).order(sort)
+  const ordered=table==='worker_earnings'?query.order('worker_id'):query
+  const {data,error}=await ordered.range(offset,offset+499)
   if(error)throw Error(error.message)
   const rows=(data??[]) as T[]
   result.push(...rows)
