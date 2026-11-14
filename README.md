@@ -3,7 +3,7 @@
 Application mobile de gestion de campagne oléicole. Code public ; données d'exploitation privées dans Supabase.
 
 ## État du projet
-**Phases 1, 2 et 3 validées sur iPhone** : connexion, ouvriers, présences, groupes, sacs et calcul exact des rémunérations. **Phase 4 interface validée sur iPhone** : avances, paies hebdomadaires, versements partiels et soldes de départ, avec historique immuable (premier versement réel encore à valider). **Phase 4.5 validée sur iPhone** : trois modes de rémunération, recherche, pointage collectif et interface Field Edition, avec changement de statut guidé en une action. **Phase 5 en validation** : bons de pesée, acheteurs, encaissements réels, dépenses et journal comptable. **Phase 6 en validation** : rapports A4 de paie, récolte, acheteurs et finances, sauvegarde en PDF via impression iPhone ; correction des débordements d'interface.
+**Phases 1, 2 et 3 validées sur iPhone** : connexion, ouvriers, présences, groupes, sacs et calcul exact des rémunérations. **Phase 4 interface validée sur iPhone** : avances, paies hebdomadaires, versements partiels et soldes de départ, avec historique immuable (premier versement réel encore à valider). **Phase 4.5 validée sur iPhone** : trois modes de rémunération, recherche, pointage collectif et interface Field Edition, avec changement de statut guidé en une action. **Phase 5 en validation** : bons de pesée, acheteurs, encaissements réels, dépenses et journal comptable. **Phase 6 validée sur iPhone** : rapports A4 de paie, récolte, acheteurs et finances ; impression PDF et correction du sélecteur de date iOS. **Phase 7 en validation** : audit, sauvegarde de données et préparation à la mise en service.
 
 ## Structure
 - `src/App.tsx` : connexion et navigation mobile.
@@ -24,7 +24,9 @@ Application mobile de gestion de campagne oléicole. Code public ; données d'ex
 - `src/Reports.tsx`, `src/report-data.ts`, `src/report-print.css` : quatre rapports A4 avec pagination maîtrisée, période et signature.
 - `src/mobile-overflow.css` : contrôle du responsive iPhone, des cadres et du haut d'écran.
 - `docs/phase6-rapports-a4-et-mobile.md` : contraintes d'impression, contrôle visuel et tests iPhone.
-- `tests/` : contrôles de phases 1–6.
+- `src/BackupPanel.tsx`, `src/backup.ts` : export privé des dix tables métier (JSON, lecture seule).
+- `docs/phase7-audit-et-mise-en-service.md` : preuves d'audit, risques résiduels et check-list terrain.
+- `tests/` : contrôles de phases 1–7.
 - `docs/architecture-securite.md` : décisions de la phase 0.
 
 ## Démarrage local
@@ -62,6 +64,13 @@ L'interface accepte uniquement les comptes Supabase Auth existants. Elle n'expos
 3. Toucher **Imprimer / Enregistrer PDF**. Sur iPhone, ouvrir l'aperçu d'impression et utiliser **Partager → Enregistrer dans Fichiers** pour récupérer le PDF.
 4. Vérifier les colonnes de signature vierges, les numéros de pages et les montants. Une écriture de paie ne remplace pas une signature réelle.
 5. Les rapports ne modifient jamais la base et distinguent les ventes des encaissements effectifs.
+
+## Audit et sauvegarde — phase 7
+1. Dans **Bilans → Copie de sauvegarde**, créer une copie complète de données au format JSON. Le fichier comprend des données personnelles et financières **non chiffrées** : le conserver dans un espace privé protégé.
+2. Vérifier sa présence dans l'application Fichiers sur iPhone. Cette copie permet une récupération manuelle, **pas** une restauration automatique testée.
+3. La récupération après perte du projet reste dépendante des sauvegardes disponibles dans le compte Supabase : contrôler leur disponibilité et réaliser un essai de restauration isolé avant une utilisation critique.
+4. Les contrôles sécurité ont validé le RLS des 10 tables, le refus de lecture anonyme et les contrepassations. La protection Auth des mots de passe compromis demeure désactivée ; vérifier les possibilités d'activation selon le plan Supabase.
+5. En cas de réseau indisponible, ne pas considérer une action comme enregistrée sans réponse positive du serveur ; vérifier ensuite dans l'historique avant de réessayer.
 
 ## Hébergement
 Le code est public sur GitHub et OliveTrack est disponible sur https://mihdeme.github.io/olivetrack/ . Les données restent privées via Supabase Auth et RLS. La compatibilité des conditions d'utilisation de GitHub Pages avec l'exploitation de l'outil doit être revue avant une utilisation commerciale régulière.
