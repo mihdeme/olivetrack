@@ -70,3 +70,32 @@
 .p5-checkbox{display:flex!important;flex-direction:row!important;align-items:center;gap:9px}
 .p5-checkbox input{width:18px;height:18px;accent-color:#376546}
 @media(max-width:380px){.p5-buyers,.p5-form,.p5-balances,.p5-journal{padding:13px}.p5-hero{padding:16px}.p5-hero-row strong{font-size:17px}.p5-two{gap:7px}.p5-metrics strong{font-size:14px}}
+
+/* iPhone geometry fix: prevent intrinsic iOS date-input widths and oversize cards
+   from widening the document beyond the visual viewport. */
+.p5,.p5 *{box-sizing:border-box}
+.p5{display:block;width:100%;max-width:100%;min-width:0;overflow-x:clip}
+.p5-hero,.p5-metrics,.p5-tabs,.p5-buyers,.p5-form,.p5-balances,.p5-journal,.p5-section-heading{min-width:0;max-width:100%}
+.p5-hero-row,.p5-metrics,.p5-two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.p5-two>*{min-width:0;max-width:100%}
+.p5-field input,.p5-field select,.p5-field textarea{display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box}
+.p5-field input[type="date"]{min-width:0;max-width:100%;padding-inline:8px;font-size:16px;-webkit-appearance:none;appearance:none}
+.p5-tabs{scrollbar-width:none;overscroll-behavior-x:contain}
+.p5-tabs button{flex-shrink:0}
+.p5-buyer-card,.p5-balance-row,.p5-entry{min-width:0;max-width:100%}
+.p5-balance-row span,.p5-entry-body,.p5-section-heading>div{min-width:0;overflow-wrap:anywhere}
+.p5-entry-right{max-width:44%}
+.p5-entry-right strong{font-size:clamp(10px,3vw,12px)}
+@media(max-width:600px){
+ .p5-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;overflow:visible}
+ .p5-tabs button{white-space:normal;min-width:0;min-height:43px;text-align:center;padding:10px 6px}
+ .p5-two.p5-optional-grid{grid-template-columns:minmax(0,1fr)}
+ .p5-optional-grid .p5-field{min-width:0}
+ .p5-hero-foot strong{overflow-wrap:anywhere;text-align:right;max-width:58%}
+ .p5-hero-row strong{font-size:clamp(13px,4.4vw,20px);overflow-wrap:anywhere}
+}
+@media(max-width:350px){
+ .p5-two{grid-template-columns:minmax(0,1fr)}
+ .p5-metrics{grid-template-columns:minmax(0,1fr)}
+ .p5-hero-foot{align-items:flex-start}
+}
