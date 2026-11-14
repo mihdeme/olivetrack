@@ -1,6 +1,6 @@
 import { money } from './phase3-data'
-import { formatKg, categoryLabels, kindLabels, type Entry } from './phase5-data'
-import type { WorkerPayment } from './phase4-data'
+import { formatKg, categoryLabels, kindLabels, methodLabels, type Entry } from './phase5-data'
+import { paymentLabels, type WorkerPayment } from './phase4-data'
 import type { PdfReport, PdfRow } from './report-pdf'
 import type { ReportData } from './report-data'
 
@@ -176,7 +176,7 @@ function salesReport(data:ReportData,from:string,to:string):PdfReport{
    {title:'MODE',key:'method',width:1.4},
    {title:'REÇU',key:'total',width:1.6,align:'right'}
   ],rows:receipts.map(e=>({date:e.entry_date,buyer:data.buyers.find(b=>b.id===e.buyer_id)?.name??'—',
-   ref:e.reference||'—',method:e.method??'—',total:moneyShort(e.amount_cents)})),empty:'Aucun encaissement dans cette période.'}
+   ref:e.reference||'—',method:e.method?(methodLabels[e.method as keyof typeof methodLabels]??e.method):'—',total:moneyShort(e.amount_cents)})),empty:'Aucun encaissement dans cette période.'}
  )
  report.footerNote='Le solde cumulé par acheteur intègre toutes les opérations jusqu’à la date de fin. Les montants vendus et réellement encaissés ne sont pas équivalents. Les contrepassations apparaissent en négatif ; un solde négatif correspond à une avance reçue de l’acheteur.'
  return report
@@ -229,7 +229,7 @@ function financialReport(data:ReportData,from:string,to:string):PdfReport{
   })).concat(payments.map(p=>({
    date:p.payment_date,kind:'Paiement ouvrier',
    counterparty:data.workers.find(w=>w.id===p.worker_id)?.full_name??'Ouvrier',
-   reference:p.kind,total:moneyShort(-p.amount_cents)
+   reference:paymentLabels[p.kind],total:moneyShort(-p.amount_cents)
   }))).sort((a,b)=>a.date.localeCompare(b.date)),empty:'Aucune opération financière dans cette période.'}
  )
  report.footerNote='Les charges des ouvriers apparaissent uniquement au paiement effectif dans le flux net, sans doublon dans les dépenses d’exploitation. Le rapport est une photographie des écritures actuellement enregistrées et de leurs corrections.'
