@@ -153,6 +153,8 @@ class Painter{
   this.y+=11
  }
  table(title:string,columns:PdfColumn[],rows:PdfRow[],empty='Aucune donnée enregistrée'){
+  // Reserve space for the section heading, table headers and at least one row.
+  this.pageBreak(105)
   this.section(title)
   const width=this.w-2*this.margin
   const sum=columns.reduce((s,x)=>s+x.width,0)
