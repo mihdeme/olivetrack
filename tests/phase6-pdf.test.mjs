@@ -22,7 +22,7 @@ const sample={
   name:i===0?'Élodie O’Connor':i===1?'Abdelkader Ben Abdessalam - Ouvrier saisonnier':'Ouvrier '+String(i+1).padStart(3,'0'),
   advances:'0,00 DH',earned:'125,00 DH',balance:'125,00 DH',sign:''
  }))},
- {type:'note',title:'NOTE',text:'Rémunérations acquises ≠ versements. Ce document est une liste de signatures ; ne signer que lorsque le paiement est réellement effectué.'}
+ {type:'note',title:'NOTE',text:'Rémunérations acquises distinctes des versements. Ce document est une liste de signatures ; ne signer que lorsque le paiement est réellement effectué.'}
  ]}
 test('PDF A4 landscape is valid, multi-page, correctly indexed, with French accents',()=>{
  const result=makeReportPdf(sample)
