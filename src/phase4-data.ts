@@ -46,12 +46,13 @@ async function allPages<T>(table: 'worker_payments' | 'worker_earnings', columns
 }
 
 export async function readPayroll(): Promise<{payments:WorkerPayment[];earnings:WorkerEarning[]}> {
-  const [payments, earnings] = await Promise.all([
+  const [payments, groupEarnings, individualEarnings] = await Promise.all([
     allPages<WorkerPayment>('worker_payments','id,worker_id,payment_date,kind,amount_cents,note,reversal_of,recorded_at'),
-    allPages<WorkerEarning>('worker_earnings','worker_id,amount_cents')
+    allPages<WorkerEarning>('worker_earnings','worker_id,amount_cents'),
+    allPages<WorkerEarning>('worker_day_compensations','worker_id,amount_cents')
   ])
   payments.sort((a,b) => b.payment_date.localeCompare(a.payment_date) || b.recorded_at.localeCompare(a.recorded_at))
-  return { payments, earnings }
+  return { payments, earnings: [...groupEarnings,...individualEarnings] }
 }
 
 export function summarizeWorker(workerId:string, earnings:WorkerEarning[], payments:WorkerPayment[]) {
