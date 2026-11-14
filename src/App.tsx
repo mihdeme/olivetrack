@@ -6,6 +6,7 @@ import { WorkerRegister } from './Phase2'
 import { FieldDay } from './FieldDay'
 import { HomeEdition } from './HomeEdition'
 import { Phase5 } from './Phase5'
+import { Reports } from './Reports'
 import './field-edition.css'
 
 type Screen = 'accueil' | 'recolte' | 'ouvriers' | 'caisse' | 'bilans'
@@ -21,7 +22,7 @@ const descriptions: Record<Screen, { heading: string; description: string }> = {
   recolte: { heading: 'Carnet de récolte', description: 'Pointage, groupes et rémunérations : toute la journée en un endroit.' },
   ouvriers: { heading: 'Les ouvriers', description: 'Ton équipe, ses fiches et les règlements en quelques gestes.' },
   caisse: { heading: 'Caisse & ventes', description: 'Livraisons, encaissements réels, dépenses et soldes des acheteurs.' },
-  bilans: { heading: 'Rapports et impressions', description: 'Les rapports A4 seront disponibles en phase 6.' },
+  bilans: { heading: 'Rapports & impressions', description: 'Rapports A4 de récolte, paie, ventes et finances, prêts pour le PDF.' },
 }
 
 function Brand() {
@@ -92,7 +93,7 @@ function Workspace({ user, onLogout }: { user: User; onLogout: () => void }) {
       {screen === 'ouvriers' && <WorkerRegister/>}
       {screen === 'recolte' && <FieldDay/>}
       {screen === 'caisse' && <Phase5/>}
-      {screen === 'bilans' && <section className="empty-state"><span className="empty-icon"><Printer/></span><h2>Module à venir</h2><p>Aucune donnée fictive n'est présentée comme réelle. Ce module sera activé après les tests de sa phase.</p><span className="phase-pill">Field Edition · Phase 4.5</span></section>}
+      {screen === 'bilans' && <Reports/>}
       <p className="signed-in">Session ouverte : {user.email}</p>
     </main>
     <nav className="bottom-nav" aria-label="Navigation principale">{tabs.map(tab => { const Icon=tab.icon; return <button key={tab.id} onClick={() => setScreen(tab.id)} aria-current={screen === tab.id ? 'page' : undefined} className={screen === tab.id ? 'active' : ''}><Icon size={21}/><span>{tab.label}</span></button> })}</nav>
