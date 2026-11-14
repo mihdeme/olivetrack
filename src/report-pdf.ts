@@ -35,7 +35,7 @@ function hexText(raw:string){
 function approximateWidth(s:string,size:number,bold=false){
  let units=0
  for(const c of s){
-  if('ilI1.,:;!| \\'\`'.includes(c))units+=.28
+  if(/[ilI1.,:;!|\\s]/.test(c))units+=.28
   else if('W@Mmw'.includes(c))units+=.79
   else if(/[A-Z0-9]/.test(c))units+=.61
   else units+=.51
