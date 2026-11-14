@@ -48,7 +48,7 @@ function PersonPaymentSheet({worker,day,existing,onClose,onSaved}:{
      <div className="field-sheet-handle"/>
      <div className="field-sheet-heading"><div><span className="field-kicker">RÉMUNÉRATION INDIVIDUELLE</span><h3 id="pay-sheet-title">{worker.full_name}</h3></div><button className="field-icon" aria-label="Fermer" onClick={onClose}><X size={19}/></button></div>
      <form onSubmit={submit} className="field-sheet-form">
-       <label>Mode de rémunération<select value={mode} onChange={e=>setMode(e.target.value as IndividualMode)}>
+       <label>Mode de rémunération<select value={mode} onChange={e=>{const next=e.target.value as IndividualMode;setMode(next);if(!existing)setRate(next==='daily'?'120':'100')}}>
          <option value="daily">À la journée</option><option value="individual_sacks">Individuel au sac</option></select></label>
        {mode==='individual_sacks'&&<label>Nombre de sacs<input type="number" min="1" max="100000" inputMode="numeric" required value={quantity} onChange={e=>setQuantity(e.target.value)}/></label>}
        <label>{mode==='daily'?'Tarif journalier (DH)':'Tarif par sac (DH)'}<input inputMode="decimal" value={rate} required onChange={e=>setRate(e.target.value)}/></label>
