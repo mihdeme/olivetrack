@@ -19,3 +19,12 @@ test('No secret or service-role key embedded in frontend', () => {
 test('Mobile viewport is present', () => {
   assert.match(html, /viewport/)
 })
+
+test('Only configured owner user can access the workspace', () => {
+  assert.match(app, /data\.user\.id !== ownerUserId/)
+  assert.match(app, /data\.user\?\.id === ownerUserId/)
+  assert.match(app, /!ownerUserId/)
+})
+test('Every displayed module is behind the authenticated workspace', () => {
+  assert.match(app, /return user \? <Workspace user=\{user\}/)
+})
