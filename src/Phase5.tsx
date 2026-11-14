@@ -13,7 +13,7 @@ const dateNow=()=>{const x=new Date();return [x.getFullYear(),String(x.getMonth(
 const errorText=(e:unknown)=>e instanceof Error?e.message:'Une erreur est survenue.'
 const isReversal=(kind:string)=>kind.endsWith('_reversal')
 
-type BuyerSheetProps={buyer?:Buyer;onClose:()=>void;onSaved:()=>Promise<void>}
+type BuyerSheetProps={buyer?:Buyer;onClose:()=>void;onSaved:(id:string)=>Promise<void>}
 function BuyerSheet({buyer,onClose,onSaved}:BuyerSheetProps){
  const [name,setName]=useState(buyer?.name??'')
  const [phone,setPhone]=useState(buyer?.phone??'')
@@ -23,7 +23,7 @@ function BuyerSheet({buyer,onClose,onSaved}:BuyerSheetProps){
  const [error,setError]=useState('')
  async function submit(e:FormEvent){
   e.preventDefault();setBusy(true);setError('')
-  try{await saveBuyer({id:buyer?.id,name:name.trim(),phone:phone.trim()||null,notes:note.trim()||null,is_active:active});await onSaved();onClose()}
+  try{const id=await saveBuyer({id:buyer?.id,name:name.trim(),phone:phone.trim()||null,notes:note.trim()||null,is_active:active});await onSaved(id);onClose()}
   catch(err){setError(errorText(err))}finally{setBusy(false)}
  }
  return <div className="field-sheet-layer" onClick={()=>!busy&&onClose()}>
@@ -203,7 +203,7 @@ export function Phase5(){
    </section>}
    {section!=='ledger'&&<div className="p5-journal-link"><BookOpenText size={17}/><span>Les écritures ne sont pas effacées : pour corriger, ouvre le Journal et enregistre une contrepassation.</span><button onClick={()=>switchTab('ledger')}>Journal <ArrowRight size={15}/></button></div>}
   </>}
-  {buyerSheet&&<BuyerSheet buyer={buyerSheet==='new'?undefined:buyerSheet} onClose={()=>setBuyerSheet(null)} onSaved={refresh}/>}
+  {buyerSheet&&<BuyerSheet buyer={buyerSheet==='new'?undefined:buyerSheet} onClose={()=>setBuyerSheet(null)} onSaved={async id=>{await refresh();setBuyerId(id)}}/>}
   <div className="p5-footer"><FileText size={15}/> Les justificatifs PDF et rapports imprimables seront ajoutés en phase 6.</div>
  </div>
 }
