@@ -34,5 +34,5 @@ test('Phase 3 UI wired into daily harvest and worker register',()=>{
   assert.match(page,/<HarvestAccounting/)
   assert.match(page,/<WorkerEarningsSummary/)
   assert.match(ui,/Rémunération totale du groupe/)
-  assert.match(ui,/phase 4/i)
+  assert.match(ui,/Paies et avances/i)
 })
