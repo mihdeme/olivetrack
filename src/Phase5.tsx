@@ -165,7 +165,7 @@ export function Phase5(){
       <label className="p5-field">Poids net (kg) *<input required inputMode="decimal" placeholder="Ex. 123,450" value={weight} onChange={e=>setWeight(e.target.value)}/></label>
       <label className="p5-field">Prix par kg (DH) *<input required inputMode="decimal" placeholder="Ex. 8,50" value={price} onChange={e=>setPrice(e.target.value)}/></label>
      </div>
-     <div className="p5-two">
+     <div className="p5-two p5-optional-grid">
       <label className="p5-field">Sacs livrés (facultatif)<input type="number" min="1" max="100000" inputMode="numeric" value={sacks} onChange={e=>setSacks(e.target.value)} placeholder="Ex. 6"/></label>
       <label className="p5-field">Date de récolte (facultative)<input type="date" value={harvestDate} onChange={e=>setHarvestDate(e.target.value)}/></label>
      </div>
