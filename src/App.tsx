@@ -4,6 +4,7 @@ import { LayoutDashboard, Sprout, Users, Wallet, Printer, LogOut, ShieldCheck, L
 import { configured, supabase, ownerUserId } from './supabase'
 import { WorkerRegister } from './Phase2'
 import { FieldDay } from './FieldDay'
+import { HomeEdition } from './HomeEdition'
 import './field-edition.css'
 
 type Screen = 'accueil' | 'recolte' | 'ouvriers' | 'caisse' | 'bilans'
@@ -86,12 +87,7 @@ function Workspace({ user, onLogout }: { user: User; onLogout: () => void }) {
       <div className="eyebrow">OLIVETRACK  /  CARNET DE CAMPAGNE</div>
       <h1>{current.heading}</h1>
       <p className="lead">{current.description}</p>
-      {screen === 'accueil' && <div className="metrics">
-        <div className="metric"><span>Récolte cumulée</span><strong>— kg</strong><small>En attente de données</small></div>
-        <div className="metric"><span>Sacs récoltés</span><strong>—</strong><small>En attente de données</small></div>
-        <div className="metric"><span>À payer aux ouvriers</span><strong>— DH</strong><small>En attente de données</small></div>
-        <div className="metric"><span>Reste à encaisser</span><strong>— DH</strong><small>En attente de données</small></div>
-      </div>}
+      {screen === 'accueil' && <HomeEdition onNavigate={setScreen}/>}
       {screen === 'ouvriers' && <WorkerRegister/>}
       {screen === 'recolte' && <FieldDay/>}
       {screen !== 'ouvriers' && screen !== 'recolte' && <section className="empty-state"><span className="empty-icon">{screen==='caisse'?<Wallet/>:screen==='bilans'?<Printer/>:<ShieldCheck/>}</span><h2>{screen === 'accueil' ? 'Espace prêt pour les données' : 'Module à venir'}</h2><p>Aucune donnée fictive n'est présentée comme réelle. Ce module sera activé après les tests de sa phase.</p><span className="phase-pill">Field Edition · Phase 4.5</span></section>}
