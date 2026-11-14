@@ -92,7 +92,7 @@ function Workspace({ user, onLogout }: { user: User; onLogout: () => void }) {
       </div>}
       {screen === 'ouvriers' && <WorkerRegister/>}
       {screen === 'recolte' && <DailyAttendance/>}
-      {screen !== 'ouvriers' && screen !== 'recolte' && <section className="empty-state"><span className="empty-icon">{screen==='recolte'?<Sprout/>:screen==='ouvriers'?<Users/>:screen==='caisse'?<Wallet/>:screen==='bilans'?<Printer/>:<ShieldCheck/>}</span><h2>{screen === 'accueil' ? 'Espace prêt pour les données' : 'Module à venir'}</h2><p>Aucune donnée fictive n'est présentée comme réelle. Ce module sera activé après les tests de sa phase.</p><span className="phase-pill">Phase 2 · Registre et présences</span></section>}
+      {screen !== 'ouvriers' && screen !== 'recolte' && <section className="empty-state"><span className="empty-icon">{screen==='caisse'?<Wallet/>:screen==='bilans'?<Printer/>:<ShieldCheck/>}</span><h2>{screen === 'accueil' ? 'Espace prêt pour les données' : 'Module à venir'}</h2><p>Aucune donnée fictive n'est présentée comme réelle. Ce module sera activé après les tests de sa phase.</p><span className="phase-pill">Phase 2 · Registre et présences</span></section>}
       <p className="signed-in">Session ouverte : {user.email}</p>
     </main>
     <nav className="bottom-nav" aria-label="Navigation principale">{tabs.map(tab => { const Icon=tab.icon; return <button key={tab.id} onClick={() => setScreen(tab.id)} aria-current={screen === tab.id ? 'page' : undefined} className={screen === tab.id ? 'active' : ''}><Icon size={21}/><span>{tab.label}</span></button> })}</nav>
