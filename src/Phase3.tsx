@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react'
 import { BadgeCheck, Coins, LockKeyhole, Save, Sprout, TriangleAlert } from 'lucide-react'
 import type { Attendance, HarvestGroup, WorkDay, Worker } from './phase2-data'
+import { listAllIndividualCompensations } from './phase45-data'
 import { getAllEarnings, getHarvestForDay, money, parseRateCents, parseSacks, saveHarvest, type GroupHarvest, type WorkerEarning } from './phase3-data'
 
 function errorText(error: unknown): string {
@@ -103,7 +104,7 @@ export function WorkerEarningsSummary({ workers }: { workers: Worker[] }) {
   const [loading,setLoading] = useState(true)
   useEffect(()=>{
     let alive=true
-    void getAllEarnings().then(rows=>{if(alive)setEarnings(rows)}).catch(e=>{if(alive)setError(errorText(e))}).finally(()=>{if(alive)setLoading(false)})
+    void Promise.all([getAllEarnings(),listAllIndividualCompensations()]).then(([group,solo])=>{if(alive)setEarnings([...group,...solo.map(x=>({harvest_id:x.id,worker_id:x.worker_id,amount_cents:x.amount_cents}))])}).catch(e=>{if(alive)setError(errorText(e))}).finally(()=>{if(alive)setLoading(false)})
     return()=>{alive=false}
   },[workers])
   const total = earnings.reduce((sum,e)=>sum+e.amount_cents,0)

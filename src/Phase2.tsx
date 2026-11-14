@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react'
-import { CalendarDays, Check, ChevronLeft, ChevronRight, Plus, Pencil, RefreshCcw, Save, UsersRound, UserRoundPlus, Archive, RotateCcw, Trash2 } from 'lucide-react'
+import { Search, CalendarDays, Check, ChevronLeft, ChevronRight, Plus, Pencil, RefreshCcw, Save, UsersRound, UserRoundPlus, Archive, RotateCcw, Trash2 } from 'lucide-react'
 import { HarvestAccounting, WorkerEarningsSummary } from './Phase3'
 import { WorkerPayroll } from './Phase4'
 import {
@@ -35,6 +35,7 @@ export function WorkerRegister() {
   const [editing, setEditing] = useState<Worker | 'new' | null>(null)
   const [form, setForm] = useState<WorkerForm>(emptyForm)
   const [showArchived, setShowArchived] = useState(false)
+  const [search, setSearch] = useState('')
   const [view, setView] = useState<'register'|'payroll'>('register')
 
   const refresh = useCallback(async () => {
@@ -73,22 +74,23 @@ export function WorkerRegister() {
     } catch (e) { setError(message(e)) }
     finally { setBusy(false) }
   }
-  const visible = workers.filter(w => showArchived || w.is_active)
+  const visible = workers.filter(w => (showArchived || w.is_active) && w.full_name.toLocaleLowerCase('fr').includes(search.toLocaleLowerCase('fr')))
   return <section className="phase2">
     <div className="worker-tabs" role="group" aria-label="Ouvriers et paiements"><button type="button" className={view==='register'?'selected':''} onClick={()=>setView('register')}>Registre</button><button type="button" className={view==='payroll'?'selected':''} onClick={()=>setView('payroll')}>Paies et avances</button></div>
     {view==='register' && <>
     <div className="section-bar"><div><h2>Registre des ouvriers</h2><p>Identité conservée d'une journée à l'autre, même en cas de départ.</p></div><button className="small-action" onClick={() => beginEdit('new')}><Plus size={17}/> Ajouter</button></div>
     <div className="mini-summary"><span><strong>{workers.filter(w => w.is_active).length}</strong> actifs</span><span><strong>{workers.filter(w => !w.is_active).length}</strong> archivés</span></div>
     {error && <p className="data-error" role="alert">{error}</p>}
-    {editing && <form className="editor" onSubmit={submit}>
+    <label className="field-search field-worker-search"><Search size={18}/><input type="search" placeholder="Chercher un ouvrier…" aria-label="Rechercher un ouvrier" value={search} onChange={e=>setSearch(e.target.value)}/><span>{visible.length}</span></label>
+    {editing && <div className="field-sheet-layer" role="presentation" onClick={()=>setEditing(null)}><div className="field-sheet" role="dialog" aria-modal="true" aria-label="Fiche ouvrier" onClick={e=>e.stopPropagation()}><div className="field-sheet-handle"/><form className="editor" onSubmit={submit}>
       <h3>{editing === 'new' ? 'Nouvel ouvrier' : 'Modifier la fiche'}</h3>
       <label htmlFor="worker-name">Nom et prénom *</label><input id="worker-name" required minLength={2} maxLength={120} value={form.full_name} onChange={e => setForm(f => ({ ...f, full_name: e.target.value }))} placeholder="Ex. Ahmed Benali"/>
       <label htmlFor="worker-phone">Téléphone (facultatif)</label><input id="worker-phone" type="tel" maxLength={40} value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder="06..."/>
       <label htmlFor="worker-notes">Remarques (facultatives)</label><textarea id="worker-notes" maxLength={500} rows={2} value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} placeholder="Détails utiles"/>
       <div className="editor-buttons"><button type="button" className="text-action" onClick={() => setEditing(null)}>Annuler</button><button className="small-action" disabled={busy} type="submit"><Save size={16}/> Enregistrer</button></div>
-    </form>}
+    </form></div></div>}
     <label className="simple-toggle"><input type="checkbox" checked={showArchived} onChange={e => setShowArchived(e.target.checked)}/> Afficher les ouvriers archivés</label>
-    {loading ? <p className="quiet">Chargement…</p> : visible.length === 0 ? <div className="muted-panel">Aucun ouvrier enregistré. Ajoute ton premier ouvrier pour commencer.</div> : <div className="work-list">
+    {loading ? <p className="quiet">Chargement…</p> : visible.length === 0 ? <div className="muted-panel">Aucun résultat. Ajoute un ouvrier ou modifie la recherche.</div> : <div className="work-list">
       {visible.map(worker => <div className="work-row" key={worker.id}>
         <span className="circle-initial">{worker.full_name.slice(0,1).toUpperCase()}</span>
         <div className="work-person"><strong>{worker.full_name}</strong><small>{worker.is_active ? (worker.phone || 'Ouvrier actif') : 'Archivé · historique conservé'}</small></div>
