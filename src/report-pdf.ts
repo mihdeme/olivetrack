@@ -255,11 +255,27 @@ export function makeReportPdf(report:PdfReport):Uint8Array{
  return painter.finish(report)
 }
 export function downloadPdf(pdf:Uint8Array,name:string){
+ const safe=name.replace(/[^a-z0-9._-]/gi,'_')
  const blob=new Blob([pdf as BlobPart],{type:'application/pdf'})
- const url=URL.createObjectURL(blob)
- const anchor=document.createElement('a')
- anchor.href=url;anchor.download=name.replace(/[^a-z0-9._-]/gi,'_')
- document.body.appendChild(anchor);anchor.click();anchor.remove()
- // Safari needs the object URL to remain available while the Files preview opens.
- window.setTimeout(()=>URL.revokeObjectURL(url),60000)
+ const save=()=>{
+  const url=URL.createObjectURL(blob)
+  const anchor=document.createElement('a')
+  anchor.href=url;anchor.download=safe
+  document.body.appendChild(anchor);anchor.click();anchor.remove()
+  // Safari needs the URL to remain valid while its Files preview opens.
+  window.setTimeout(()=>URL.revokeObjectURL(url),60000)
+ }
+ // Native iOS share sheet exposes "Enregistrer dans Fichiers" and Print.
+ if(typeof navigator.share==='function' && typeof navigator.canShare==='function'){
+  const file=new File([pdf as BlobPart],safe,{type:'application/pdf'})
+  if(navigator.canShare({files:[file]})){
+   void navigator.share({files:[file],title:'OliveTrack · Document PDF'})
+    .catch((error:unknown)=>{
+     if(error instanceof Error && error.name==='AbortError')return
+     save()
+    })
+   return
+  }
+ }
+ save()
 }
