@@ -128,7 +128,6 @@ export function FieldDay(){
  async function moveWorker(row:Attendance,target:string){
   await perform(()=>assignGroup(row.id,target||null))
  }
- const unassigned=attendance.filter(a=>!a.group_id).length
  const groupSacks=harvests.reduce((s,h)=>s+h.sacks,0)
  const soloSacks=individual.filter(x=>x.mode==='individual_sacks').reduce((s,x)=>s+x.quantity,0)
  const earningsTotal=harvests.reduce((s,h)=>s+h.total_cents,0)+individual.reduce((s,x)=>s+x.amount_cents,0)
