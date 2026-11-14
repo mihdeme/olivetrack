@@ -83,3 +83,10 @@ html,body,#root{width:100%;max-width:100%;overflow-x:clip}
  .p5-field .p5-date-control{padding-inline:9px}
  .p5-field .p5-date-control .p5-date-value{font-size:14px}
 }
+
+/* All four finance actions remain visible without horizontal clipping on iPhone. */
+@media(max-width:600px){
+ .p5-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;overflow:visible;scroll-snap-type:none;padding-inline:0}
+ .p5-tabs button{min-width:0;max-width:100%;min-height:45px;white-space:normal;overflow-wrap:anywhere;text-align:center;padding:10px 6px}
+ .p5-two:has(input[type="date"]){grid-template-columns:minmax(0,1fr)}
+}
