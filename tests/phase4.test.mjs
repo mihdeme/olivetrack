@@ -32,7 +32,7 @@ test('Retries do not create duplicates and normal payouts cannot overdraw earned
 test('Corrections use signed reversals rather than modifying records',()=>{
   assert.match(schema,/public\.reverse_worker_payment/)
   assert.match(schema,/amount_cents=-v_original\.amount_cents/)
-  assert.match(schema,/kind='reversal'/)
+  assert.match(schema,/kind = 'reversal'/)
   assert.match(schema,/raise exception 'Ce paiement a déjà été annulé'/)
 })
 test('Worker UI exposes payments separately from worker records and harvest',()=>{
