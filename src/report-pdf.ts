@@ -27,7 +27,10 @@ function hexText(raw:string){
  let value=''
  for(const char of raw.normalize('NFC')){
   const cp=char.codePointAt(0)??63
-  const b=cp<=255?cp:cps[cp]??63
+  const b=cp<=255?cp:cps[cp]
+  if(b===undefined){
+   throw Error('Caractère non pris en charge dans le PDF : «'+char+'». Ce format gère les caractères latins, mais pas encore les noms en écriture arabe. Aucun PDF incomplet n’a été généré.')
+  }
   value+=b.toString(16).padStart(2,'0')
  }
  return '<'+value+'>'
