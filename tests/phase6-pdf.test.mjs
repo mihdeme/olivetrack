@@ -52,24 +52,6 @@ test('PDF portrait preserves width and does not skip empty tables',()=>{
   blocks:[{type:'table',title:'Présences',columns:[{key:'name',title:'OUVRIER',width:1}],rows:[],empty:'Aucune donnée enregistrée'}]
  })
  const text=decode(result)
- console.log('A4_VISUAL_SMOKE='+Buffer.from(makeReportPdf({
-  title:'Rapport journalier de récolte',subtitle:'Données synthétiques / Vérification de mise en page',
-  period:'Journée du 14 novembre 2026',generated:'Édité le 14/11/2026',
-  blocks:[
-   {type:'totals',items:[{label:'Ouvriers présents',value:'90'},{label:'Sacs récoltés',value:'123'},{label:'Gains acquis',value:'12 345,60 DH'}]},
-   {type:'table',title:'Registre des présences et gains',columns:[
-    {title:'OUVRIER',key:'name',width:3},
-    {title:'GROUPE OU MODE',key:'group',width:2.4},
-    {title:'SACS',key:'sacks',width:1.2,align:'right'},
-    {title:'GAIN / JOURNÉE',key:'gain',width:1.8,align:'right'}
-   ],rows:[
-    {name:'Élodie O’Connor',group:'À la journée',sacks:'—',gain:'120,00 DH'},
-    {name:'Abdelkader Ben Abdessalam',group:'Groupe 1',sacks:'3',gain:'300,00 DH'},
-    {name:'Fatima Zahra',group:'Au sac individuel',sacks:'4',gain:'400,00 DH'}
-   ]},
-   {type:'note',title:'NOTE DE LECTURE',text:'La rémunération gagnée est indépendante des paiements. Le bon de pesée ne constitue pas un encaissement.'}
-  ]
- })).toString('base64'))
  assert.match(text,/\/MediaBox \[0 0 595 842\]/)
  assert.ok(text.startsWith('%PDF-1.4'))
 })
