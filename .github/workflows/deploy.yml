@@ -39,14 +39,15 @@ jobs:
           test -n "$VITE_SUPABASE_URL" || (echo "Missing VITE_SUPABASE_URL" && exit 1)
           test -n "$VITE_SUPABASE_PUBLISHABLE_KEY" || (echo "Missing publishable key" && exit 1)
           test -n "$VITE_OWNER_USER_ID" || (echo "Missing owner UID" && exit 1)
-      - name: Probe Supabase Auth health without exposing keys
+      - name: Probe Supabase Auth health
         env:
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
         run: |
           echo "Checking Supabase Auth endpoint from GitHub Actions"
           safe_url=$(printf '%s' "$VITE_SUPABASE_URL" | sed -E 's#^http://#https://#; s#/*$##')
           [[ "$safe_url" == https://*.supabase.co ]] || { echo "Invalid Supabase HTTPS URL"; exit 1; }
-          http_status=$(curl -sS --max-time 20 -o /tmp/supabase-health.json -w '%{http_code}' "$safe_url/auth/v1/health") || { echo "Supabase endpoint unreachable from runner"; exit 1; }
+          http_status=$(curl -sS --max-time 20 -o /tmp/supabase-health.json -w '%{http_code}' -H "apikey: $VITE_SUPABASE_PUBLISHABLE_KEY" "$safe_url/auth/v1/health") || { echo "Supabase endpoint unreachable from runner"; exit 1; }
           echo "Auth health HTTP: $http_status"
           test "$http_status" = "200" || { echo "Supabase auth health returned non-200"; exit 1; }
       - run: npm ci --no-audit --no-fund
