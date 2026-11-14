@@ -3,6 +3,7 @@ import { CalendarDays, CheckCircle2, FileDown, FileText, Printer, RefreshCcw, Sh
 import { money } from './phase3-data'
 import { formatDate, isoToday, payrollRows, harvestRows, buyerRows, financeRows, readReportData, period, type ReportData, type ReportKind } from './report-data'
 import './report-print.css'
+import { BackupPanel } from './BackupPanel'
 
 type Column={label:string;ratio:number;numeric?:boolean}
 type ReportRow={cells:string[];key:string}
@@ -169,5 +170,6 @@ export function Reports(){
    <div className="reports-viewport"><div className="reports-zoom" style={{zoom:previewScale}}><Pages content={content} start={start} end={end} generated={generated}/></div></div>
   </div>}
   {!ready&&<div className="reports-empty"><Printer size={24}/><strong>Ton document apparaîtra ici</strong><span>Choisis le rapport et les dates, puis génère l’aperçu avant impression.</span></div>}
+  <BackupPanel/>
  </section>
 }
