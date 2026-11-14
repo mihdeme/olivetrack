@@ -21,3 +21,10 @@ test('Native iOS input is clipped and can still receive touch, keyboard and acce
  assert.match(ui,/aria-label=\{label\}/)
  assert.match(ui,/onChange=\{e=>onChange\(e.target.value\)\}/)
 })
+
+test('Finance subnavigation is a 2-column grid on iPhone rather than overflowing',()=>{
+ assert.match(css,/@media\(max-width:600px\)/)
+ assert.match(css,/\.p5-tabs\{display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/)
+ assert.match(css,/\.p5-tabs button\{min-width:0;max-width:100%/)
+ assert.match(css,/\.p5-two:has\(input\[type="date"\]\)/)
+})
