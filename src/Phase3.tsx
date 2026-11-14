@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react'
-import { BadgeCheck, Coins, LockKeyhole, RotateCcw, Save, Sprout, TriangleAlert } from 'lucide-react'
+import { BadgeCheck, Coins, LockKeyhole, Save, Sprout, TriangleAlert } from 'lucide-react'
 import type { Attendance, HarvestGroup, WorkDay, Worker } from './phase2-data'
 import { getAllEarnings, getHarvestForDay, money, parseRateCents, parseSacks, saveHarvest, type GroupHarvest, type WorkerEarning } from './phase3-data'
 
