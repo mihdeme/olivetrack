@@ -2,6 +2,7 @@ import { useEffect, useState, type FormEvent } from 'react'
 import type { User } from '@supabase/supabase-js'
 import { LayoutDashboard, Sprout, Users, Wallet, Printer, LogOut, ShieldCheck, LockKeyhole, ArrowRight, LoaderCircle, Leaf, AlertCircle } from 'lucide-react'
 import { configured, supabase, ownerUserId } from './supabase'
+import { DailyAttendance, WorkerRegister } from './Phase2'
 
 type Screen = 'accueil' | 'recolte' | 'ouvriers' | 'caisse' | 'bilans'
 const tabs: { id: Screen; label: string; icon: typeof LayoutDashboard }[] = [
@@ -13,8 +14,8 @@ const tabs: { id: Screen; label: string; icon: typeof LayoutDashboard }[] = [
 ]
 const descriptions: Record<Screen, { heading: string; description: string }> = {
   accueil: { heading: 'Vue d’ensemble', description: 'Retrouve ici les indicateurs essentiels de la campagne.' },
-  recolte: { heading: 'Récolte du jour', description: 'Présences, groupes, sacs et pesées seront disponibles en phase 2 et 3.' },
-  ouvriers: { heading: 'Registre des ouvriers', description: 'Les comptes individuels, avances et paies seront ajoutés dans les prochaines phases.' },
+  recolte: { heading: 'Récolte du jour', description: 'Note les présences et répartis les ouvriers en groupes chaque jour.' },
+  ouvriers: { heading: 'Registre des ouvriers', description: 'Ajoute, modifie ou archive les ouvriers sans perdre leur historique.' },
   caisse: { heading: 'Caisse et ventes', description: 'Versements, livraisons et dépenses seront intégrés en phase 5.' },
   bilans: { heading: 'Rapports et impressions', description: 'Les rapports A4 seront disponibles en phase 6.' },
 }
@@ -89,7 +90,9 @@ function Workspace({ user, onLogout }: { user: User; onLogout: () => void }) {
         <div className="metric"><span>À payer aux ouvriers</span><strong>— DH</strong><small>En attente de données</small></div>
         <div className="metric"><span>Reste à encaisser</span><strong>— DH</strong><small>En attente de données</small></div>
       </div>}
-      <section className="empty-state"><span className="empty-icon">{screen==='recolte'?<Sprout/>:screen==='ouvriers'?<Users/>:screen==='caisse'?<Wallet/>:screen==='bilans'?<Printer/>:<ShieldCheck/>}</span><h2>{screen === 'accueil' ? 'Espace prêt pour les données' : 'Module à venir'}</h2><p>Aucune donnée fictive n'est présentée comme réelle. Ce module sera activé après les tests de sa phase.</p><span className="phase-pill">Phase 1 · Fondations</span></section>
+      {screen === 'ouvriers' && <WorkerRegister/>}
+      {screen === 'recolte' && <DailyAttendance/>}
+      {screen !== 'ouvriers' && screen !== 'recolte' && <section className="empty-state"><span className="empty-icon">{screen==='recolte'?<Sprout/>:screen==='ouvriers'?<Users/>:screen==='caisse'?<Wallet/>:screen==='bilans'?<Printer/>:<ShieldCheck/>}</span><h2>{screen === 'accueil' ? 'Espace prêt pour les données' : 'Module à venir'}</h2><p>Aucune donnée fictive n'est présentée comme réelle. Ce module sera activé après les tests de sa phase.</p><span className="phase-pill">Phase 2 · Registre et présences</span></section>}
       <p className="signed-in">Session ouverte : {user.email}</p>
     </main>
     <nav className="bottom-nav" aria-label="Navigation principale">{tabs.map(tab => { const Icon=tab.icon; return <button key={tab.id} onClick={() => setScreen(tab.id)} aria-current={screen === tab.id ? 'page' : undefined} className={screen === tab.id ? 'active' : ''}><Icon size={21}/><span>{tab.label}</span></button> })}</nav>
