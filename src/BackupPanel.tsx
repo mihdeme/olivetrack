@@ -19,8 +19,9 @@ export function BackupPanel(){
    setError(e instanceof Error?e.message:'Export impossible. Réessaie.')
   }finally{setBusy(false)}
  }
- return <section className="backup-panel">
-  <div className="backup-panel-title"><Archive size={21}/><div><strong>Copie de sauvegarde</strong><p>Export intégral des dix tables métier, en lecture seule.</p></div></div>
+ return <details className="backup-panel">
+  <summary className="backup-panel-title"><Archive size={21}/><span><strong>Copie de sauvegarde</strong><small>Exporter les dix tables de la campagne (privé)</small></span></summary>
+  <div className="backup-content">
   <p>À conserver dans un espace privé sécurisé, idéalement avant la saison et chaque semaine. Le fichier JSON contient des données personnelles et financières <strong>non chiffrées</strong>.</p>
   <button type="button" className="backup-export" onClick={()=>void exportData()} disabled={busy}>
    <Download size={17}/>{busy?'Préparation de la copie…':'Exporter mes données (.json)'}
@@ -28,5 +29,6 @@ export function BackupPanel(){
   <div className="backup-caution"><ShieldAlert size={16}/><span>Cet export est une copie de secours et de contrôle. La restauration complète n’est pas automatisée ; les sauvegardes de la base Supabase doivent aussi être vérifiées.</span></div>
   {error&&<p className="data-error" role="alert">{error}</p>}
   {success&&<p className="backup-success" role="status"><CheckCircle2 size={16}/>{success}</p>}
- </section>
+  </div>
+ </details>
 }
