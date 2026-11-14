@@ -17,7 +17,7 @@ export function HomeEdition({onNavigate}:{onNavigate:(screen:'recolte'|'ouvriers
    for(let start=0;;start+=500){
     const {data,error}=await supabase.from(table).select(columns).order('id').range(start,start+499)
     if(error)throw Error(error.message)
-    rows.push(...(data??[]))
+    rows.push(...((data??[]) as unknown as {sacks?:number;mode?:string;quantity?:number}[]))
     if(!data || data.length<500)return rows
     if(rows.length>=50000)throw Error('Historique trop volumineux.')
    }
