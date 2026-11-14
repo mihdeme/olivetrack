@@ -92,7 +92,7 @@ function Workspace({ user, onLogout }: { user: User; onLogout: () => void }) {
       {screen === 'ouvriers' && <WorkerRegister/>}
       {screen === 'recolte' && <FieldDay/>}
       {screen === 'caisse' && <Phase5/>}
-      {screen === 'bilans' && <section className="empty-state"><span className="empty-icon">{screen==='caisse'?<Wallet/>:screen==='bilans'?<Printer/>:<ShieldCheck/>}</span><h2>{screen === 'accueil' ? 'Espace prêt pour les données' : 'Module à venir'}</h2><p>Aucune donnée fictive n'est présentée comme réelle. Ce module sera activé après les tests de sa phase.</p><span className="phase-pill">Field Edition · Phase 4.5</span></section>}
+      {screen === 'bilans' && <section className="empty-state"><span className="empty-icon"><Printer/></span><h2>Module à venir</h2><p>Aucune donnée fictive n'est présentée comme réelle. Ce module sera activé après les tests de sa phase.</p><span className="phase-pill">Field Edition · Phase 4.5</span></section>}
       <p className="signed-in">Session ouverte : {user.email}</p>
     </main>
     <nav className="bottom-nav" aria-label="Navigation principale">{tabs.map(tab => { const Icon=tab.icon; return <button key={tab.id} onClick={() => setScreen(tab.id)} aria-current={screen === tab.id ? 'page' : undefined} className={screen === tab.id ? 'active' : ''}><Icon size={21}/><span>{tab.label}</span></button> })}</nav>
