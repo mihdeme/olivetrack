@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
-import { ArrowRight, ClipboardCheck, Layers3, UsersRound, Wallet } from 'lucide-react'
+import { ArrowDownLeft, ArrowRight, ClipboardCheck, Layers3, UsersRound, Wallet } from 'lucide-react'
 import { listWorkers } from './phase2-data'
 import { readPayroll } from './phase4-data'
 import { money } from './phase3-data'
+import { listLedger, totals } from './phase5-data'
 import { supabase } from './supabase'
 
-type Summary={workers:number;active:number;groupSacks:number;individualSacks:number;earned:number;paid:number;due:number}
-export function HomeEdition({onNavigate}:{onNavigate:(screen:'recolte'|'ouvriers')=>void}){
+type Summary={workers:number;active:number;groupSacks:number;individualSacks:number;earned:number;paid:number;due:number;sold:number;received:number;buyerDue:number}
+export function HomeEdition({onNavigate}:{onNavigate:(screen:'recolte'|'ouvriers'|'caisse')=>void}){
  const [stats,setStats]=useState<Summary|null>(null)
  const [error,setError]=useState('')
  useEffect(()=>{
@@ -24,18 +25,19 @@ export function HomeEdition({onNavigate}:{onNavigate:(screen:'recolte'|'ouvriers
   }
   async function load(){
    if(!supabase)throw Error('Supabase non configuré')
-   const [workers,payroll,group,individual]=await Promise.all([
+   const [workers,payroll,group,individual,ledger]=await Promise.all([
     listWorkers(),readPayroll(),
     allRows('group_harvests','id,sacks'),
-    allRows('worker_day_compensations','id,mode,quantity')
+    allRows('worker_day_compensations','id,mode,quantity'),listLedger()
    ])
    const earned=payroll.earnings.reduce((sum,row)=>sum+row.amount_cents,0)
    const paid=payroll.payments.reduce((sum,row)=>sum+row.amount_cents,0)
+   const sales=totals(ledger)
    if(live)setStats({
     workers:workers.length,active:workers.filter(w=>w.is_active).length,
     groupSacks:group.reduce((sum,row)=>sum+(row.sacks??0),0),
     individualSacks:individual.filter(row=>row.mode==='individual_sacks').reduce((sum,row)=>sum+(row.quantity??0),0),
-    earned,paid,due:earned-paid
+    earned,paid,due:earned-paid,sold:sales.sold,received:sales.received,buyerDue:sales.outstanding
    })
   }
   void load().catch(e=>{if(live)setError(e instanceof Error?e.message:'Chargement impossible')})
@@ -50,13 +52,16 @@ export function HomeEdition({onNavigate}:{onNavigate:(screen:'recolte'|'ouvriers
     <div><span>Sacs comptabilisés</span><strong>{stats.groupSacks+stats.individualSacks}</strong><Layers3 size={18}/></div>
     <div><span>Rémunération acquise</span><strong>{money(stats.earned)}</strong><ClipboardCheck size={18}/></div>
     <div><span>Reste à payer</span><strong>{money(stats.due)}</strong><Wallet size={18}/></div>
+    <div><span>Ventes valorisées</span><strong>{money(stats.sold)}</strong><ArrowDownLeft size={18}/></div>
+    <div><span>Reste à encaisser</span><strong>{money(stats.buyerDue)}</strong><Wallet size={18}/></div>
    </section>
    <div className="field-home-note">Reste à payer = gains acquis − sommes versées nettes. Un solde négatif correspond à des avances.</div>
   </>}
   <div className="field-home-cta"><span className="field-kicker">ACTIONS RAPIDES</span>
    <button onClick={()=>onNavigate('recolte')}><span><ClipboardCheck size={19}/> Ouvrir la journée</span><ArrowRight size={18}/></button>
    <button onClick={()=>onNavigate('ouvriers')}><span><UsersRound size={19}/> Ouvriers et paiements</span><ArrowRight size={18}/></button>
+   <button onClick={()=>onNavigate('caisse')}><span><Wallet size={19}/> Caisse, ventes et dépenses</span><ArrowRight size={18}/></button>
   </div>
-  <p className="field-home-end">Les ventes, pesées et dépenses seront intégrées à l'étape 5.</p>
+  <p className="field-home-end">Les montants vendus et encaissés sont distincts. Un bon de pesée n'est pas un paiement.</p>
  </div>
 }
