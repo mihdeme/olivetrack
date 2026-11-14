@@ -37,8 +37,9 @@ function SignIn({ onLogin }: { onLogin: (u: User) => void }) {
       if (authError) {
         const errorCode = authError.code ?? 'unknown'
         const httpStatus = authError.status ?? 'unknown'
+        const providerMessage = authError.message || 'Aucun détail fourni'
         // Show the provider's machine-readable diagnostic without exposing passwords or session tokens.
-        setError(`Connexion refusée (code : ${errorCode}, HTTP : ${httpStatus}). ${errorCode === 'invalid_credentials' ? 'Vérifie le mot de passe enregistré pour ce compte Supabase.' : 'Signale-moi ce code pour identifier la cause.'}`)
+        setError(`Échec de connexion (HTTP ${httpStatus}, code ${errorCode}) : ${providerMessage}. ${httpStatus === 0 ? 'La requête réseau vers Supabase a échoué : vérifie la connexion au service, et non ton mot de passe.' : ''}`)
         return
       }
       if (!data.user) { setError('Connexion sans utilisateur retourné. Réessaie.'); return }
