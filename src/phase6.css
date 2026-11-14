@@ -39,3 +39,9 @@
 .p6-fineprint p{margin:0;font-size:11px;line-height:1.6}
 .p6-footer{display:flex;flex-wrap:wrap;align-items:center;gap:7px;color:#95a191;font-size:10px;margin:9px 0 17px}
 @media(max-width:380px){.p6-report-card{padding:12px 10px;min-height:188px}.p6-export{padding:14px}.p6-export-top strong{font-size:12px}.p6-date-grid{gap:7px}.p6-date-field input{padding:8px 5px;font-size:14px}}
+
+/* iOS native date-picker intrinsic widths can exceed a 160px grid track. */
+@media(max-width:480px){
+ .p6-date-grid{grid-template-columns:minmax(0,1fr)}
+ .p6-date-field input[type="date"]{max-width:100%;min-width:0;-webkit-appearance:none;appearance:none}
+}
