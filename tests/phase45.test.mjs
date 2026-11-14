@@ -34,7 +34,7 @@ test('Owner-only atomic bulk attendance supports 100 workers and three actions',
 })
 test('Mobile field interface has search, filters, bulk selection and distinct stages',()=>{
  assert.match(app,/<FieldDay\/>/)
- for(const term of ['pointage','groupes','gains','field-search','Sélection multiple','bulkAttendance','PersonPaymentSheet','Sans groupe'])
+ for(const term of ['pointage','groupes','gains','field-search','Sélection multiple','bulkAttendance','WorkerStatusSheet','Sans groupe'])
   assert.match(field,new RegExp(term))
  assert.match(field,/aria-label="Rechercher un ouvrier"/)
  assert.match(fieldCss,/prefers-reduced-motion/)
